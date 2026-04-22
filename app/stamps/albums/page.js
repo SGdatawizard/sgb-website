@@ -92,7 +92,7 @@ export default function AlbumsPage() {
             onMouseEnter={e => { e.currentTarget.style.background = '#FFAE55'; e.currentTarget.style.color = '#02383A' }}
             onMouseLeave={e => { e.currentTarget.style.background = '#02383A'; e.currentTarget.style.color = '#fff' }}
           >
-            Visit Dauwalders →
+            Visit Dauwalders &#8594;
           </a>
         </div>
 
