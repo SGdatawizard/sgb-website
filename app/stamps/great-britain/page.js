@@ -38,25 +38,26 @@ const categories = ['Booklet Panes', 'Booklets', 'Cinderellas', 'Colour Trials',
 
 function FilterSection({ title, open, onToggle, children }) {
   return (
-    <div style={{ borderBottom: '0.5px solid #e0ddd6', paddingBottom: open ? '16px' : '0' }}>
-      <button
-        onClick={onToggle}
-        style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-montserrat)', fontSize: '13px', fontWeight: 600, color: '#1a1a1a', letterSpacing: '0.02em' }}
-      >
+    <div style={{ borderBottom: '0.5px solid #ebebeb' }}>
+      <button onClick={onToggle} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 0', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-opensans)', fontSize: '13px', fontWeight: 600, color: '#1a1a1a' }}>
         {title}
-        <span style={{ fontSize: '16px', color: '#888', fontWeight: 400 }}>{open ? '∧' : '∨'}</span>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }}>
+          <path d="M1 3.5L5 7L9 3.5" stroke="#999" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
       </button>
-      {open && <div>{children}</div>}
+      {open && <div style={{ paddingBottom: '14px' }}>{children}</div>}
     </div>
   )
 }
 
 function Checkbox({ label, checked, onChange, disabled }) {
   return (
-    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '5px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
-      <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled}
-        style={{ width: '16px', height: '16px', accentColor: '#02383A', cursor: disabled ? 'not-allowed' : 'pointer', flexShrink: 0 }} />
-      <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: disabled ? '#aaa' : '#333' }}>{label}</span>
+    <label style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.3 : 1 }}>
+      <div style={{ width: '15px', height: '15px', borderRadius: '3px', border: `1px solid ${checked ? '#02383A' : '#ccc'}`, background: checked ? '#02383A' : '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}>
+        {checked && <svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+      </div>
+      <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled} style={{ display: 'none' }} />
+      <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: disabled ? '#bbb' : '#444', lineHeight: 1.4 }}>{label}</span>
     </label>
   )
 }
@@ -69,17 +70,11 @@ export default function GreatBritainPage() {
   const [selectedConditions, setSelectedConditions] = useState([])
   const [selectedQVSubs, setSelectedQVSubs] = useState([])
   const [selectedCategories, setSelectedCategories] = useState([])
-
-  const [openSections, setOpenSections] = useState({
-    price: true, monarch: true, condition: true, qvSub: true, category: true,
-  })
+  const [sortBy, setSortBy] = useState('Featured')
+  const [openSections, setOpenSections] = useState({ price: true, monarch: true, condition: true, qvSub: true, category: true })
 
   const toggleSection = key => setOpenSections(s => ({ ...s, [key]: !s[key] }))
-
-  const toggleItem = (list, setList, item) => {
-    setList(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])
-  }
-
+  const toggleItem = (list, setList, item) => setList(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])
   const qvSelected = selectedMonarchs.includes('Queen Victoria')
 
   let filtered = products.filter(p => {
@@ -91,22 +86,18 @@ export default function GreatBritainPage() {
     return true
   })
 
-  const clearAll = () => {
-    setMinPrice(0)
-    setMaxPrice(62500)
-    setSelectedMonarchs([])
-    setSelectedConditions([])
-    setSelectedQVSubs([])
-    setSelectedCategories([])
-  }
+  if (sortBy === 'Price: low to high') filtered = [...filtered].sort((a, b) => a.price - b.price)
+  if (sortBy === 'Price: high to low') filtered = [...filtered].sort((a, b) => b.price - a.price)
 
   const hasFilters = selectedMonarchs.length > 0 || selectedConditions.length > 0 || selectedQVSubs.length > 0 || selectedCategories.length > 0 || minPrice > 0 || maxPrice < 62500
 
+  const clearAll = () => { setMinPrice(0); setMaxPrice(62500); setSelectedMonarchs([]); setSelectedConditions([]); setSelectedQVSubs([]); setSelectedCategories([]) }
+
   return (
-    <div style={{ fontFamily: 'var(--font-opensans)', background: '#f5f2ec', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-opensans)', background: '#fff', minHeight: '100vh' }}>
 
       {/* Main nav */}
-      <nav style={{ background: '#fff', borderBottom: '0.5px solid #ddd', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px', position: 'relative' }}>
+      <nav style={{ background: '#fff', borderBottom: '0.5px solid #e8e8e8', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px', position: 'relative' }}>
         <Link href="/"><img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '56px', width: 'auto' }} /></Link>
         <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '4px' }}>
           {[['Stamps', '/stamps'], ['Coins', '/coins'], ['Bullion', '/bullion'], ['Auctions', '/auctions'], ['About', '/about']].map(([label, href]) => (
@@ -118,101 +109,91 @@ export default function GreatBritainPage() {
           ))}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <input placeholder="Search stamps..." style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', border: '0.5px solid #ddd', borderRadius: '3px', padding: '6px 10px', width: '140px' }} />
-          <Link href="/account" style={{ fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 500, color: '#333', textDecoration: 'none' }}>My account</Link>
+          <input placeholder="Search stamps..." style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', border: '0.5px solid #e0e0e0', borderRadius: '4px', padding: '7px 12px', width: '150px', outline: 'none' }} />
+          <Link href="/account" style={{ fontFamily: 'var(--font-montserrat)', fontSize: '12px', color: '#555', textDecoration: 'none' }}>My account</Link>
           <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 600, color: '#02383A', cursor: 'pointer' }}>Basket ({basketCount})</span>
         </div>
       </nav>
 
       {/* Stamps sub-nav */}
       <div style={{ background: '#02383A', padding: '0 40px', display: 'flex', alignItems: 'center' }}>
-        <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginRight: '24px', whiteSpace: 'nowrap' }}>Stamps</span>
+        <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginRight: '24px', whiteSpace: 'nowrap' }}>Stamps</span>
         {subNav.map(([label, href]) => (
           <Link key={label} href={href}
-            style={{ fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: label === 'Great Britain' ? 700 : 500, color: label === 'Great Britain' ? '#FFAE55' : 'rgba(255,255,255,0.75)', padding: '13px 18px', letterSpacing: '0.04em', textDecoration: 'none', borderBottom: label === 'Great Britain' ? '2px solid #FFAE55' : '2px solid transparent', display: 'block' }}
-            onMouseEnter={e => { if (label !== 'Great Britain') { e.currentTarget.style.color = '#FFAE55'; e.currentTarget.style.borderBottom = '2px solid #FFAE55' } }}
-            onMouseLeave={e => { if (label !== 'Great Britain') { e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; e.currentTarget.style.borderBottom = '2px solid transparent' } }}
+            style={{ fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: label === 'Great Britain' ? 600 : 400, color: label === 'Great Britain' ? '#FFAE55' : 'rgba(255,255,255,0.7)', padding: '13px 18px', letterSpacing: '0.03em', textDecoration: 'none', borderBottom: label === 'Great Britain' ? '2px solid #FFAE55' : '2px solid transparent', display: 'block' }}
+            onMouseEnter={e => { if (label !== 'Great Britain') { e.currentTarget.style.color = '#FFAE55' } }}
+            onMouseLeave={e => { if (label !== 'Great Britain') { e.currentTarget.style.color = 'rgba(255,255,255,0.7)' } }}
           >{label}</Link>
         ))}
       </div>
 
-      {/* Page header */}
-      <div style={{ background: '#fff', borderBottom: '0.5px solid #e0ddd6', padding: '24px 40px' }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
-          <Link href="/stamps" style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#888', textDecoration: 'none' }}>Stamps</Link>
-          <span style={{ color: '#ccc' }}>›</span>
-          <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#333' }}>Great Britain</span>
+      {/* Breadcrumb + title */}
+      <div style={{ padding: '20px 40px 0', borderBottom: '0.5px solid #ebebeb' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+          <Link href="/stamps" style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#999', textDecoration: 'none' }}>Stamps</Link>
+          <span style={{ color: '#ddd', fontSize: '12px' }}>›</span>
+          <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#555' }}>Great Britain</span>
         </div>
-        <div style={{ fontFamily: 'var(--font-libre)', fontSize: '28px', color: '#02383A', fontWeight: 700 }}>Great Britain</div>
-        <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#888', marginTop: '4px' }}>Victorian, Edwardian & modern British stamps from the world's leading philatelic dealer</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: '16px' }}>
+          <div>
+            <div style={{ fontFamily: 'var(--font-libre)', fontSize: '26px', color: '#1a1a1a', fontWeight: 700 }}>Great Britain</div>
+            <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#999', marginTop: '3px' }}>Victorian, Edwardian & modern British stamps</div>
+          </div>
+          <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#999' }}>{filtered.length} items</div>
+        </div>
       </div>
 
-      {/* Main content */}
-      <div style={{ display: 'flex', padding: '0 40px', gap: '32px', maxWidth: '1400px', margin: '0 auto' }}>
+      {/* Main layout */}
+      <div style={{ display: 'flex', padding: '0 40px', gap: '48px', maxWidth: '1400px', margin: '0 auto' }}>
 
         {/* Sidebar */}
-        <div style={{ width: '240px', flexShrink: 0, padding: '24px 0' }}>
+        <div style={{ width: '220px', flexShrink: 0, padding: '24px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+            <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '14px', fontWeight: 600, color: '#1a1a1a' }}>Filters</span>
+            {hasFilters && (
+              <button onClick={clearAll} style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#999', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>Clear all</button>
+            )}
+          </div>
 
-          {hasFilters && (
-            <button onClick={clearAll} style={{ width: '100%', padding: '9px', fontFamily: 'var(--font-montserrat)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', background: '#02383A', color: '#fff', border: 'none', borderRadius: '3px', cursor: 'pointer', marginBottom: '16px' }}>
-              Clear all filters
-            </button>
-          )}
-
-          {/* Price */}
-          <FilterSection title="Price" open={openSections.price} onToggle={() => toggleSection('price')}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', border: '0.5px solid #ddd', borderRadius: '3px', overflow: 'hidden', flex: 1 }}>
-                <span style={{ padding: '7px 8px', fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#888', background: '#f5f5f5', borderRight: '0.5px solid #ddd' }}>£</span>
-                <input type="number" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} style={{ width: '100%', padding: '7px 8px', border: 'none', fontFamily: 'var(--font-opensans)', fontSize: '13px', outline: 'none' }} />
+          <div style={{ marginTop: '8px' }}>
+            <FilterSection title="Price" open={openSections.price} onToggle={() => toggleSection('price')}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', border: '0.5px solid #ddd', borderRadius: '6px', overflow: 'hidden', flex: 1 }}>
+                  <span style={{ padding: '6px 8px', fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#aaa', background: '#fafafa', borderRight: '0.5px solid #ddd' }}>£</span>
+                  <input type="number" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} style={{ width: '100%', padding: '6px 8px', border: 'none', fontFamily: 'var(--font-opensans)', fontSize: '13px', outline: 'none', background: '#fff' }} />
+                </div>
+                <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#aaa' }}>to</span>
+                <div style={{ display: 'flex', alignItems: 'center', border: '0.5px solid #ddd', borderRadius: '6px', overflow: 'hidden', flex: 1 }}>
+                  <span style={{ padding: '6px 8px', fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#aaa', background: '#fafafa', borderRight: '0.5px solid #ddd' }}>£</span>
+                  <input type="number" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} style={{ width: '100%', padding: '6px 8px', border: 'none', fontFamily: 'var(--font-opensans)', fontSize: '13px', outline: 'none', background: '#fff' }} />
+                </div>
               </div>
-              <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#888' }}>to</span>
-              <div style={{ display: 'flex', alignItems: 'center', border: '0.5px solid #ddd', borderRadius: '3px', overflow: 'hidden', flex: 1 }}>
-                <span style={{ padding: '7px 8px', fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#888', background: '#f5f5f5', borderRight: '0.5px solid #ddd' }}>£</span>
-                <input type="number" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} style={{ width: '100%', padding: '7px 8px', border: 'none', fontFamily: 'var(--font-opensans)', fontSize: '13px', outline: 'none' }} />
-              </div>
-            </div>
-            <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: '#aaa' }}>The highest price is £62,500.00</div>
-          </FilterSection>
+              <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: '#bbb' }}>The highest price is £62,500.00</div>
+            </FilterSection>
 
-          {/* Monarch */}
-          <FilterSection title="Monarch" open={openSections.monarch} onToggle={() => toggleSection('monarch')}>
-            {monarchs.map(m => (
-              <Checkbox key={m} label={m} checked={selectedMonarchs.includes(m)} onChange={() => toggleItem(selectedMonarchs, setSelectedMonarchs, m)} />
-            ))}
-          </FilterSection>
+            <FilterSection title="Monarch" open={openSections.monarch} onToggle={() => toggleSection('monarch')}>
+              {monarchs.map(m => <Checkbox key={m} label={m} checked={selectedMonarchs.includes(m)} onChange={() => toggleItem(selectedMonarchs, setSelectedMonarchs, m)} />)}
+            </FilterSection>
 
-          {/* Condition */}
-          <FilterSection title="Condition" open={openSections.condition} onToggle={() => toggleSection('condition')}>
-            {conditions.map(c => (
-              <Checkbox key={c} label={c} checked={selectedConditions.includes(c)} onChange={() => toggleItem(selectedConditions, setSelectedConditions, c)} />
-            ))}
-          </FilterSection>
+            <FilterSection title="Condition" open={openSections.condition} onToggle={() => toggleSection('condition')}>
+              {conditions.map(c => <Checkbox key={c} label={c} checked={selectedConditions.includes(c)} onChange={() => toggleItem(selectedConditions, setSelectedConditions, c)} />)}
+            </FilterSection>
 
-          {/* QV Sub-Category */}
-          <FilterSection title={<span>QV Sub-Category {!qvSelected && <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '10px', color: '#bbb', fontWeight: 400 }}> — select Queen Victoria</span>}</span>} open={openSections.qvSub} onToggle={() => toggleSection('qvSub')}>
-            {qvSubCategories.map(q => (
-              <Checkbox key={q} label={q} checked={selectedQVSubs.includes(q)} onChange={() => toggleItem(selectedQVSubs, setSelectedQVSubs, q)} disabled={!qvSelected} />
-            ))}
-          </FilterSection>
+            <FilterSection title="QV Sub-Category" open={openSections.qvSub} onToggle={() => toggleSection('qvSub')}>
+              {qvSubCategories.map(q => <Checkbox key={q} label={q} checked={selectedQVSubs.includes(q)} onChange={() => toggleItem(selectedQVSubs, setSelectedQVSubs, q)} disabled={!qvSelected} />)}
+            </FilterSection>
 
-          {/* Category */}
-          <FilterSection title="Category" open={openSections.category} onToggle={() => toggleSection('category')}>
-            {categories.map(c => (
-              <Checkbox key={c} label={c} checked={selectedCategories.includes(c)} onChange={() => toggleItem(selectedCategories, setSelectedCategories, c)} />
-            ))}
-          </FilterSection>
-
+            <FilterSection title="Category" open={openSections.category} onToggle={() => toggleSection('category')}>
+              {categories.map(c => <Checkbox key={c} label={c} checked={selectedCategories.includes(c)} onChange={() => toggleItem(selectedCategories, setSelectedCategories, c)} />)}
+            </FilterSection>
+          </div>
         </div>
 
         {/* Product grid */}
         <div style={{ flex: 1, padding: '24px 0' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#888' }}>
-              Showing <strong style={{ color: '#1a1a1a' }}>{filtered.length}</strong> {filtered.length === 1 ? 'item' : 'items'}
-            </div>
-            <select style={{ fontFamily: 'var(--font-montserrat)', fontSize: '12px', border: '0.5px solid #ddd', borderRadius: '3px', padding: '7px 12px', color: '#333', background: '#fff', cursor: 'pointer' }}>
-              <option>Sort: Featured</option>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+            <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', border: '0.5px solid #e0e0e0', borderRadius: '6px', padding: '7px 12px', color: '#555', background: '#fff', cursor: 'pointer', outline: 'none' }}>
+              <option>Featured</option>
               <option>Price: low to high</option>
               <option>Price: high to low</option>
               <option>Newest</option>
@@ -221,36 +202,41 @@ export default function GreatBritainPage() {
 
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0' }}>
-              <div style={{ fontFamily: 'var(--font-libre)', fontSize: '20px', color: '#aaa', fontStyle: 'italic', marginBottom: '12px' }}>No items match your filters</div>
-              <button onClick={clearAll} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 700, color: '#02383A', background: 'none', border: '0.5px solid #02383A', padding: '8px 20px', borderRadius: '3px', cursor: 'pointer' }}>Clear all filters</button>
+              <div style={{ fontFamily: 'var(--font-libre)', fontSize: '18px', color: '#bbb', fontStyle: 'italic', marginBottom: '12px' }}>No items match your filters</div>
+              <button onClick={clearAll} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', color: '#02383A', background: 'none', border: '0.5px solid #02383A', padding: '8px 20px', borderRadius: '6px', cursor: 'pointer' }}>Clear all filters</button>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
               {filtered.map(p => (
-                <div key={p.id} style={{ background: '#fff', borderRadius: '5px', border: '0.5px solid #e0ddd6', overflow: 'hidden' }}>
+                <div key={p.id} style={{ background: '#fff', borderRadius: '8px', border: '0.5px solid #ebebeb', overflow: 'hidden', transition: 'border-color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = '#ccc'}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = '#ebebeb'}
+                >
                   <Link href={`/stamps/great-britain/${p.id}`} style={{ textDecoration: 'none', display: 'block' }}>
-                    <div style={{ height: '200px', background: '#e8e3da', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', cursor: 'pointer' }}>
-                      <span style={{ fontFamily: 'var(--font-libre)', fontSize: '11px', color: '#aaa', fontStyle: 'italic' }}>Image coming soon</span>
+                    <div style={{ height: '200px', background: '#f8f8f8', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderBottom: '0.5px solid #ebebeb' }}>
+                      <span style={{ fontFamily: 'var(--font-libre)', fontSize: '11px', color: '#ccc', fontStyle: 'italic' }}>Image coming soon</span>
                       {p.badge && (
-                        <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#02383A', color: '#FFAE55', fontSize: '9px', fontFamily: 'var(--font-montserrat)', fontWeight: 700, padding: '3px 8px', borderRadius: '2px', letterSpacing: '0.06em' }}>{p.badge}</div>
+                        <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#02383A', color: '#FFAE55', fontSize: '9px', fontFamily: 'var(--font-montserrat)', fontWeight: 600, padding: '3px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>{p.badge}</div>
                       )}
                     </div>
                     <div style={{ padding: '14px 16px' }}>
-                      <div style={{ display: 'flex', gap: '6px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '9px', fontFamily: 'var(--font-montserrat)', color: '#02383A', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', background: '#f0f7f7', padding: '2px 7px', borderRadius: '2px' }}>{p.monarch}</span>
-                        <span style={{ fontSize: '9px', fontFamily: 'var(--font-montserrat)', color: '#666', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', background: '#f5f5f5', padding: '2px 7px', borderRadius: '2px' }}>{p.condition}</span>
+                      <div style={{ display: 'flex', gap: '5px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '10px', fontFamily: 'var(--font-opensans)', color: '#888', background: '#f5f5f5', padding: '2px 8px', borderRadius: '4px' }}>{p.monarch}</span>
+                        <span style={{ fontSize: '10px', fontFamily: 'var(--font-opensans)', color: '#888', background: '#f5f5f5', padding: '2px 8px', borderRadius: '4px' }}>{p.condition}</span>
                       </div>
-                      <div style={{ fontFamily: 'var(--font-libre)', fontSize: '14px', color: '#1a1a1a', marginBottom: '6px', lineHeight: 1.4 }}>{p.name}</div>
-                      <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: '#888', marginBottom: '10px', lineHeight: 1.5 }}>{p.desc}</div>
-                      <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '16px', fontWeight: 700, color: '#02383A' }}>£{p.price.toLocaleString()}</div>
+                      <div style={{ fontFamily: 'var(--font-libre)', fontSize: '14px', color: '#1a1a1a', marginBottom: '5px', lineHeight: 1.45 }}>{p.name}</div>
+                      <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#aaa', marginBottom: '10px', lineHeight: 1.5 }}>{p.desc}</div>
+                      <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '16px', fontWeight: 700, color: '#1a1a1a' }}>£{p.price.toLocaleString()}</div>
                     </div>
                   </Link>
-                  <button
-                    onClick={() => setBasketCount(c => c + 1)}
-                    style={{ display: 'block', width: '100%', background: '#02383A', color: '#fff', border: 'none', padding: '11px', fontFamily: 'var(--font-montserrat)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = '#FFAE55'; e.currentTarget.style.color = '#02383A' }}
-                    onMouseLeave={e => { e.currentTarget.style.background = '#02383A'; e.currentTarget.style.color = '#fff' }}
-                  >Add to basket</button>
+                  <div style={{ padding: '0 16px 14px' }}>
+                    <button
+                      onClick={() => setBasketCount(c => c + 1)}
+                      style={{ width: '100%', background: '#02383A', color: '#fff', border: 'none', padding: '10px', fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', cursor: 'pointer', borderRadius: '6px', transition: 'background 0.2s' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#FFAE55'; e.currentTarget.style.color = '#02383A' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = '#02383A'; e.currentTarget.style.color = '#fff' }}
+                    >Add to basket</button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -259,7 +245,7 @@ export default function GreatBritainPage() {
       </div>
 
       {/* Footer */}
-      <footer style={{ background: '#1a1a1a', padding: '28px 40px', marginTop: '40px' }}>
+      <footer style={{ background: '#1a1a1a', padding: '28px 40px', marginTop: '60px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '40px', opacity: 0.8 }} />
           <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>© 2025 Stanley Gibbons Baldwin's Ltd.</span>
