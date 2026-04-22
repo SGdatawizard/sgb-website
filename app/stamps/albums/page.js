@@ -19,7 +19,7 @@ export default function AlbumsPage() {
     <div style={{ fontFamily: 'var(--font-opensans)', background: '#fff', minHeight: '100vh' }}>
 
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #e8e8e8', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px', position: 'relative' }}>
-        <Link href="/"><img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '56px', width: 'auto' }} /></Link>
+        <Link href="/"><img src={LOGO} alt="Stanley Gibbons Baldwins" style={{ height: '56px', width: 'auto' }} /></Link>
         <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '4px' }}>
           {[['Stamps', '/stamps'], ['Coins', '/coins'], ['Bullion', '/bullion'], ['Auctions', '/auctions'], ['About', '/about']].map(([label, href]) => (
             <Link key={label} href={href}
@@ -77,14 +77,11 @@ export default function AlbumsPage() {
           <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#777', lineHeight: 1.7, marginBottom: '20px' }}>
             To browse and purchase the complete Stanley Gibbons albums and accessories range, please visit Dauwalders directly using the link below.
           </div>
-          
+          <Link
             href="https://www.dauwalders.co.uk/stanley-gibbons-albums-2135-c"
             target="_blank"
-            rel="noopener noreferrer"
             style={{ display: 'inline-block', background: '#02383A', color: '#fff', padding: '12px 24px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', borderRadius: '6px', textDecoration: 'none' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#FFAE55'; e.currentTarget.style.color = '#02383A'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#02383A'; e.currentTarget.style.color = '#fff'; }}
-          >Visit Dauwalders</a>
+          >Visit Dauwalders</Link>
         </div>
 
         <div style={{ borderTop: '0.5px solid #ebebeb', paddingTop: '28px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
@@ -96,9 +93,9 @@ export default function AlbumsPage() {
           </div>
           <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#777', lineHeight: 1.75 }}>
             Should you have any questions please contact us at{' '}
-            <a href="mailto:support@stanleygibbons.com" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '3px' }}>support@stanleygibbons.com</a>
+            <Link href="mailto:support@stanleygibbons.com" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '3px' }}>support@stanleygibbons.com</Link>
             {' '}or call our customer service team on{' '}
-            <a href="tel:+441425472363" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'none' }}>+44 1425 472363</a>
+            <Link href="tel:+441425472363" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'none' }}>+44 1425 472363</Link>
           </div>
         </div>
 
@@ -106,8 +103,8 @@ export default function AlbumsPage() {
 
       <footer style={{ background: '#1a1a1a', padding: '28px 40px', marginTop: '40px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '40px', opacity: 0.8 }} />
-          <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>© 2025 Stanley Gibbons Baldwin's Ltd.</span>
+          <img src={LOGO} alt="Stanley Gibbons Baldwins" style={{ height: '40px', opacity: 0.8 }} />
+          <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>© 2025 Stanley Gibbons Baldwins Ltd.</span>
           <div style={{ display: 'flex', gap: '20px' }}>
             {[['Coins', '/coins'], ['Bullion', '/bullion'], ['Auctions', '/auctions']].map(([l, h]) => (
               <Link key={l} href={h} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.05em', textDecoration: 'none' }}>{l}</Link>
