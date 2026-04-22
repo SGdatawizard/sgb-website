@@ -1,0 +1,33 @@
+:root {
+  --primary: #02383A;
+  --secondary: #FFAE55;
+  --bg: #f5f2ec;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666666;
+  --border: #e0ddd6;
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-libre: 'Libre Baskerville', serif;
+  --font-opensans: 'Open Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-opensans);
+  background: var(--bg);
+  color: var(--text);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
