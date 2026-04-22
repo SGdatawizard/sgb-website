@@ -53,7 +53,7 @@ export default function AlbumsPage() {
       <div style={{ padding: '20px 40px', borderBottom: '0.5px solid #ebebeb' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px' }}>
           <Link href="/stamps" style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#999', textDecoration: 'none' }}>Stamps</Link>
-          <span style={{ color: '#ddd', fontSize: '12px' }}>›</span>
+          <span style={{ color: '#ddd', fontSize: '12px' }}>{'›'}</span>
           <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#555' }}>Albums & Accessories</span>
         </div>
         <div style={{ fontFamily: 'var(--font-libre)', fontSize: '26px', color: '#1a1a1a', fontWeight: 700 }}>Albums & Accessories</div>
@@ -66,13 +66,12 @@ export default function AlbumsPage() {
         {/* Partnership notice */}
         <div style={{ marginBottom: '40px' }}>
           <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', color: '#02383A', textTransform: 'uppercase', marginBottom: '20px' }}>Albums & Accessories Licensing Partnership</div>
-
           {[
             'To offer our customers a better and improved range of stamp albums and accessories, we have partnered with Dauwalders, who oversee the production and distribution of all Stanley Gibbons albums and accessories.',
             'Dauwalders, based in Salisbury, Wiltshire, are specialists in albums and accessories and have been trading for over 60 years. They share our passion and commitment to the hobby and bring extensive expertise to this area of the business.',
             'Under this partnership, Dauwalders have taken responsibility for all aspects of the albums and accessories operation — from production through to fulfilment. This includes the full range of Davo products.',
             'Stanley Gibbons will continue to provide the album page designs to ensure full consistency across the range and alignment with our catalogues. We are working closely with Dauwalders on ongoing improvements and new product developments.',
-            'Stanley Gibbons Baldwin\'s will continue to serve customers with our catalogues, digital products, and stamps through retail and auction, all handled by the Stanley Gibbons Baldwin\'s team. This licensing partnership with Dauwalders applies solely to Stanley Gibbons albums and accessories.',
+            "Stanley Gibbons Baldwin's will continue to serve customers with our catalogues, digital products, and stamps through retail and auction, all handled by the Stanley Gibbons Baldwin's team. This licensing partnership with Dauwalders applies solely to Stanley Gibbons albums and accessories.",
           ].map((para, i) => (
             <p key={i} style={{ fontFamily: 'var(--font-opensans)', fontSize: '14px', color: '#555', lineHeight: 1.85, marginBottom: '18px' }}>{para}</p>
           ))}
@@ -89,10 +88,10 @@ export default function AlbumsPage() {
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-block', background: '#02383A', color: '#fff', padding: '12px 24px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', borderRadius: '6px', textDecoration: 'none' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#FFAE55'; e.currentTarget.style.color = '#02383A' }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#02383A'; e.currentTarget.style.color = '#fff' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#FFAE55'; e.currentTarget.style.color = '#02383A'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#02383A'; e.currentTarget.style.color = '#fff'; }}
           >
-            Visit Dauwalders &#8594;
+            {'Visit Dauwalders →'}
           </a>
         </div>
 
