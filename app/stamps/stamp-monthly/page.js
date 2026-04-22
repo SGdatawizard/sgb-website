@@ -97,7 +97,7 @@ export default function StampMonthlyPage() {
 
       {/* Subscription cards */}
       <div style={{ padding: '0 40px 60px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', maxWidth: '900px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', maxWidth: '900px', margin: '0 auto' }}>
           {subscriptions.map(s => (
             <div key={s.id} style={{ background: '#fff', borderRadius: '8px', border: '0.5px solid #ebebeb', overflow: 'hidden', transition: 'border-color 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.borderColor = '#ccc'}
