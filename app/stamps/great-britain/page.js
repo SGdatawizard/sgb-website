@@ -127,19 +127,38 @@ export default function GreatBritainPage() {
         ))}
       </div>
 
-      {/* Breadcrumb + title */}
-      <div style={{ padding: '20px 40px 0', borderBottom: '0.5px solid #ebebeb' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+      {/* Breadcrumb + title + gift voucher */}
+      <div style={{ padding: '20px 40px', borderBottom: '0.5px solid #ebebeb' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px' }}>
           <Link href="/stamps" style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#999', textDecoration: 'none' }}>Stamps</Link>
           <span style={{ color: '#ddd', fontSize: '12px' }}>›</span>
           <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#555' }}>Great Britain</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: '40px', paddingBottom: '4px' }}>
+
+          {/* Left — title */}
           <div>
             <div style={{ fontFamily: 'var(--font-libre)', fontSize: '26px', color: '#1a1a1a', fontWeight: 700 }}>Great Britain</div>
             <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#999', marginTop: '3px' }}>Victorian, Edwardian & modern British stamps</div>
           </div>
-          <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#999' }}>{filtered.length} items</div>
+
+          {/* Centre — gift voucher */}
+          <div style={{ textAlign: 'center', borderLeft: '0.5px solid #ebebeb', borderRight: '0.5px solid #ebebeb', padding: '0 40px' }}>
+            <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 700, color: '#02383A', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '5px' }}>Gift Vouchers</div>
+            <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#999', lineHeight: 1.7, maxWidth: '420px' }}>
+              To redeem or purchase a voucher, please contact us on{' '}
+              <a href="tel:+441425472363" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'none' }}>+44 1425 472363</a>
+              {' '}or email{' '}
+              <a href="mailto:shop@sgbaldwins.com" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'none' }}>shop@sgbaldwins.com</a>
+              {' '}and we will be more than happy to assist you.
+            </div>
+          </div>
+
+          {/* Right — item count */}
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#999' }}>{filtered.length} items</div>
+          </div>
+
         </div>
       </div>
 
