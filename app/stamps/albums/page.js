@@ -57,7 +57,7 @@ export default function AlbumsPage() {
         <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#999', marginTop: '3px' }}>Stanley Gibbons albums & accessories, fulfilled by Dauwalders</div>
       </div>
 
-      <div style={{ padding: '48px 40px', maxWidth: '800px' }}>
+      <div style={{ padding: '48px 40px', maxWidth: '800px', margin: '0 auto' }}>
 
         <div style={{ marginBottom: '40px' }}>
           <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', color: '#02383A', textTransform: 'uppercase', marginBottom: '20px' }}>Albums & Accessories Licensing Partnership</div>
