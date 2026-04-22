@@ -18,7 +18,6 @@ export default function AlbumsPage() {
   return (
     <div style={{ fontFamily: 'var(--font-opensans)', background: '#fff', minHeight: '100vh' }}>
 
-      {/* Main nav */}
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #e8e8e8', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px', position: 'relative' }}>
         <Link href="/"><img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '56px', width: 'auto' }} /></Link>
         <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '4px' }}>
@@ -37,33 +36,29 @@ export default function AlbumsPage() {
         </div>
       </nav>
 
-      {/* Stamps sub-nav */}
       <div style={{ background: '#02383A', padding: '0 40px', display: 'flex', alignItems: 'center' }}>
         <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginRight: '24px', whiteSpace: 'nowrap' }}>Stamps</span>
         {subNav.map(([label, href]) => (
           <Link key={label} href={href}
             style={{ fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: label === 'Albums & Accessories' ? 600 : 400, color: label === 'Albums & Accessories' ? '#FFAE55' : 'rgba(255,255,255,0.7)', padding: '13px 18px', letterSpacing: '0.03em', textDecoration: 'none', borderBottom: label === 'Albums & Accessories' ? '2px solid #FFAE55' : '2px solid transparent', display: 'block' }}
-            onMouseEnter={e => { if (label !== 'Albums & Accessories') { e.currentTarget.style.color = '#FFAE55' } }}
-            onMouseLeave={e => { if (label !== 'Albums & Accessories') { e.currentTarget.style.color = 'rgba(255,255,255,0.7)' } }}
+            onMouseEnter={e => { if (label !== 'Albums & Accessories') e.currentTarget.style.color = '#FFAE55' }}
+            onMouseLeave={e => { if (label !== 'Albums & Accessories') e.currentTarget.style.color = 'rgba(255,255,255,0.7)' }}
           >{label}</Link>
         ))}
       </div>
 
-      {/* Breadcrumb + title */}
       <div style={{ padding: '20px 40px', borderBottom: '0.5px solid #ebebeb' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px' }}>
           <Link href="/stamps" style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#999', textDecoration: 'none' }}>Stamps</Link>
-          <span style={{ color: '#ddd', fontSize: '12px' }}>{'›'}</span>
+          <span style={{ color: '#ddd', fontSize: '12px' }}>›</span>
           <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#555' }}>Albums & Accessories</span>
         </div>
         <div style={{ fontFamily: 'var(--font-libre)', fontSize: '26px', color: '#1a1a1a', fontWeight: 700 }}>Albums & Accessories</div>
         <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#999', marginTop: '3px' }}>Stanley Gibbons albums & accessories, fulfilled by Dauwalders</div>
       </div>
 
-      {/* Main content */}
       <div style={{ padding: '48px 40px', maxWidth: '800px' }}>
 
-        {/* Partnership notice */}
         <div style={{ marginBottom: '40px' }}>
           <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', color: '#02383A', textTransform: 'uppercase', marginBottom: '20px' }}>Albums & Accessories Licensing Partnership</div>
           {[
@@ -77,7 +72,6 @@ export default function AlbumsPage() {
           ))}
         </div>
 
-        {/* Dauwalders CTA */}
         <div style={{ background: '#faf9f7', border: '0.5px solid #e8e4dc', borderRadius: '8px', padding: '28px 32px', marginBottom: '32px' }}>
           <div style={{ fontFamily: 'var(--font-libre)', fontSize: '17px', color: '#1a1a1a', fontWeight: 700, marginBottom: '10px' }}>View the full range of Stanley Gibbons Albums & Accessories</div>
           <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#777', lineHeight: 1.7, marginBottom: '20px' }}>
@@ -90,12 +84,9 @@ export default function AlbumsPage() {
             style={{ display: 'inline-block', background: '#02383A', color: '#fff', padding: '12px 24px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', borderRadius: '6px', textDecoration: 'none' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#FFAE55'; e.currentTarget.style.color = '#02383A'; }}
             onMouseLeave={e => { e.currentTarget.style.background = '#02383A'; e.currentTarget.style.color = '#fff'; }}
-          >
-            {'Visit Dauwalders →'}
-          </a>
+          >Visit Dauwalders</a>
         </div>
 
-        {/* Contact */}
         <div style={{ borderTop: '0.5px solid #ebebeb', paddingTop: '28px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
           <div style={{ flexShrink: 0, marginTop: '2px' }}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -105,19 +96,14 @@ export default function AlbumsPage() {
           </div>
           <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: '#777', lineHeight: 1.75 }}>
             Should you have any questions please contact us at{' '}
-            <a href="mailto:support@stanleygibbons.com" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
-              support@stanleygibbons.com
-            </a>
+            <a href="mailto:support@stanleygibbons.com" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '3px' }}>support@stanleygibbons.com</a>
             {' '}or call our customer service team on{' '}
-            <a href="tel:+441425472363" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'none' }}>
-              +44 1425 472363
-            </a>
+            <a href="tel:+441425472363" style={{ color: '#02383A', fontWeight: 600, textDecoration: 'none' }}>+44 1425 472363</a>
           </div>
         </div>
 
       </div>
 
-      {/* Footer */}
       <footer style={{ background: '#1a1a1a', padding: '28px 40px', marginTop: '40px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '40px', opacity: 0.8 }} />
@@ -129,6 +115,7 @@ export default function AlbumsPage() {
           </div>
         </div>
       </footer>
+
     </div>
   )
 }
