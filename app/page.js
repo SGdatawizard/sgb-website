@@ -1,40 +1,54 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+
+const LOGO = 'https://gmufbvrxogukrxtgyuag.supabase.co/storage/v1/object/public/images/logo/logo.png'
+
+const slides = [
+  {
+    images: [
+      'https://gmufbvrxogukrxtgyuag.supabase.co/storage/v1/object/public/images/carousel/web1.png',
+      'https://gmufbvrxogukrxtgyuag.supabase.co/storage/v1/object/public/images/carousel/web2.png',
+    ],
+    tagline: 'The world\'s finest philatelic collection',
+    sub: 'Rare stamps, catalogues & publications',
+    btn: 'Shop stamps',
+    link: '/stamps',
+  },
+  {
+    images: [
+      'https://gmufbvrxogukrxtgyuag.supabase.co/storage/v1/object/public/images/carousel/web3.png',
+      'https://gmufbvrxogukrxtgyuag.supabase.co/storage/v1/object/public/images/carousel/web4.png',
+    ],
+    tagline: 'Numismatics of the highest order',
+    sub: 'Ancient & modern coins, medals & banknotes',
+    btn: 'Shop coins',
+    link: '/coins',
+  },
+  {
+    images: [
+      'https://gmufbvrxogukrxtgyuag.supabase.co/storage/v1/object/public/images/carousel/web5.png',
+    ],
+    tagline: 'Live & online auctions',
+    sub: '800+ lots — stamps, coins, medals & banknotes',
+    btn: 'View catalogue',
+    link: '/auctions',
+  },
+]
 
 export default function Home() {
   const [slide, setSlide] = useState(0)
   const [basketCount, setBasketCount] = useState(0)
 
-  const slides = [
-    {
-      eyebrow: 'Stanley Gibbons — New arrivals',
-      title: 'Rare stamps & philatelic treasures',
-      body: 'From Victorian Penny Blacks to modern limited editions — the world\'s finest stamp collection, curated for collectors at every level.',
-      btn1: 'Shop stamps',
-      btn2: 'View catalogues',
-      link1: '/stamps',
-      link2: '/stamps?cat=catalogues',
-    },
-    {
-      eyebrow: 'Baldwin\'s — Coin department',
-      title: 'Ancient & modern numismatics',
-      body: 'From Greek ancients to modern gold sovereigns — Baldwin\'s has been the trusted name in rare coins since 1872.',
-      btn1: 'Shop coins',
-      btn2: 'View all lots',
-      link1: '/coins',
-      link2: '/coins',
-    },
-    {
-      eyebrow: 'Live auction — Next sale',
-      title: 'Upcoming auction: June 2025',
-      body: 'Over 800 lots spanning rare stamps, world coins, medals & banknotes. Live online bidding available.',
-      btn1: 'View catalogue',
-      btn2: 'Register to bid',
-      link1: '/auctions',
-      link2: '/auctions',
-    },
-  ]
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlide(prev => (prev + 1) % slides.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const currentSlide = slides[slide]
+  const currentImage = currentSlide.images[0]
 
   const stampProducts = [
     { cat: 'Great Britain', name: '1840 Penny Black, plate 1a', price: '£1,250', badge: 'Featured' },
@@ -50,122 +64,152 @@ export default function Home() {
     { cat: 'World', name: 'USA 1893 Columbian half dollar', price: '£320', badge: null },
   ]
 
-  const prev = () => setSlide((slide + 2) % 3)
-  const next = () => setSlide((slide + 1) % 3)
-
   return (
     <div style={{ fontFamily: 'var(--font-opensans)', background: '#f5f2ec' }}>
 
-      {/* Announcement bar */}
-      <div style={{ background: '#02383A', textAlign: 'center', padding: '9px', fontFamily: 'var(--font-montserrat)', fontSize: '11px', letterSpacing: '0.06em', color: '#FFAE55' }}>
-        Stanley Gibbons Baldwin's — The home of stamps, coins & collectibles since 1856
-      </div>
-
       {/* Nav */}
-      <nav style={{ background: '#fff', borderBottom: '0.5px solid #ddd', padding: '0 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '68px' }}>
-        <div>
-          <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: '15px', letterSpacing: '0.1em', color: '#02383A' }}>STANLEY GIBBONS</div>
-          <div style={{ width: '100%', height: '0.5px', background: '#02383A', opacity: 0.3, margin: '2px 0' }} />
-          <div style={{ fontFamily: 'var(--font-libre)', fontSize: '9px', letterSpacing: '0.08em', color: '#FFAE55', fontStyle: 'italic' }}>Baldwin's · Est. 1872</div>
-        </div>
+      <nav style={{ background: '#fff', borderBottom: '0.5px solid #ddd', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px', position: 'relative' }}>
         <div style={{ display: 'flex', gap: '6px' }}>
-          {[['Stamps', '/stamps'], ['Coins', '/coins'], ['Auctions', '/auctions'], ['Publications', '/stamps?cat=catalogues'], ['About', '/about']].map(([label, href]) => (
-            <Link key={label} href={href} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 500, color: '#333', padding: '6px 10px' }}>{label}</Link>
+          {[['Stamps', '/stamps'], ['Coins', '/coins'], ['Auctions', '/auctions'], ['Publications', '/stamps?cat=catalogues']].map(([label, href]) => (
+            <Link key={label} href={href} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 500, color: '#333', padding: '6px 10px', letterSpacing: '0.05em' }}>{label}</Link>
           ))}
         </div>
+
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '56px', width: 'auto' }} />
+        </div>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <input placeholder="Search products..." style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#888', border: '0.5px solid #ddd', borderRadius: '3px', padding: '6px 10px', width: '140px' }} />
-          <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 600, color: '#02383A' }}>Basket ({basketCount})</span>
+          <input placeholder="Search..." style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: '#888', border: '0.5px solid #ddd', borderRadius: '3px', padding: '6px 10px', width: '130px' }} />
+          {[['My account', '/account'], ['About', '/about']].map(([label, href]) => (
+            <Link key={label} href={href} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 500, color: '#333', letterSpacing: '0.05em' }}>{label}</Link>
+          ))}
+          <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', fontWeight: 600, color: '#02383A', cursor: 'pointer' }}>Basket ({basketCount})</span>
         </div>
       </nav>
 
-      {/* Carousel */}
-      <div style={{ background: '#02383A', position: 'relative', overflow: 'hidden', minHeight: '340px', display: 'flex', alignItems: 'stretch' }}>
-        <div style={{ display: 'flex', width: '300%', transform: `translateX(-${slide * 33.333}%)`, transition: 'transform 0.5s ease' }}>
-          {slides.map((s, i) => (
-            <div key={i} style={{ width: '33.333%', flexShrink: 0, display: 'flex', alignItems: 'center', padding: '40px 48px', gap: '40px' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', letterSpacing: '0.14em', color: '#FFAE55', textTransform: 'uppercase', marginBottom: '10px' }}>{s.eyebrow}</div>
-                <div style={{ fontFamily: 'var(--font-libre)', fontSize: '30px', color: '#fff', fontWeight: 700, lineHeight: 1.2, marginBottom: '12px' }}>{s.title}</div>
-                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, marginBottom: '22px', maxWidth: '380px' }}>{s.body}</div>
-                <Link href={s.link1} style={{ background: '#FFAE55', color: '#02383A', padding: '11px 24px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 700, borderRadius: '3px', marginRight: '12px' }}>{s.btn1}</Link>
-                <Link href={s.link2} style={{ color: '#fff', border: '1px solid rgba(255,255,255,0.35)', padding: '11px 24px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', borderRadius: '3px' }}>{s.btn2}</Link>
-              </div>
-            </div>
-          ))}
+      {/* Full-screen carousel */}
+      <div style={{ position: 'relative', height: '580px', overflow: 'hidden' }}>
+        <img
+          key={currentImage}
+          src={currentImage}
+          alt=""
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.05) 100%)' }} />
+
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 72px', maxWidth: '640px' }}>
+          <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', letterSpacing: '0.16em', color: '#FFAE55', textTransform: 'uppercase', marginBottom: '14px' }}>
+            {currentSlide.sub}
+          </div>
+          <div style={{ fontFamily: 'var(--font-libre)', fontSize: '42px', color: '#fff', fontWeight: 700, lineHeight: 1.15, marginBottom: '28px' }}>
+            {currentSlide.tagline}
+          </div>
+          <Link href={currentSlide.link} style={{ display: 'inline-block', background: '#FFAE55', color: '#02383A', padding: '13px 30px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', borderRadius: '3px', width: 'fit-content' }}>
+            {currentSlide.btn} →
+          </Link>
         </div>
-        <button onClick={prev} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: '0.5px solid rgba(255,255,255,0.2)', color: '#fff', width: '34px', height: '34px', borderRadius: '50%', fontSize: '18px' }}>‹</button>
-        <button onClick={next} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: '0.5px solid rgba(255,255,255,0.2)', color: '#fff', width: '34px', height: '34px', borderRadius: '50%', fontSize: '18px' }}>›</button>
-        <div style={{ position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '7px' }}>
-          {[0, 1, 2].map(i => (
-            <button key={i} onClick={() => setSlide(i)} style={{ width: '7px', height: '7px', borderRadius: '50%', background: slide === i ? '#FFAE55' : 'rgba(255,255,255,0.3)', border: 'none' }} />
+
+        {/* Slide indicators */}
+        <div style={{ position: 'absolute', bottom: '28px', left: '72px', display: 'flex', gap: '8px' }}>
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setSlide(i)}
+              style={{ width: i === slide ? '28px' : '8px', height: '8px', borderRadius: '4px', background: i === slide ? '#FFAE55' : 'rgba(255,255,255,0.5)', border: 'none', padding: 0, transition: 'all 0.3s ease', cursor: 'pointer' }}
+            />
           ))}
         </div>
       </div>
 
       {/* Featured stamps */}
-      <ProductSection title="Featured stamps" link="/stamps" linkLabel="View all stamps" products={stampProducts} onAdd={() => setBasketCount(c => c + 1)} />
+      <ProductSection
+        title="Featured stamps"
+        link="/stamps"
+        linkLabel="View all stamps"
+        products={stampProducts}
+        onAdd={() => setBasketCount(c => c + 1)}
+      />
 
       {/* Auction strip */}
-      <div style={{ background: '#02383A', padding: '28px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ background: '#02383A', padding: '36px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', letterSpacing: '0.12em', color: '#FFAE55', textTransform: 'uppercase', marginBottom: '6px' }}>Next sale — June 2025</div>
-          <div style={{ fontFamily: 'var(--font-libre)', fontSize: '20px', color: '#fff', fontWeight: 700, marginBottom: '4px' }}>Stanley Gibbons Baldwin's Auction</div>
-          <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)' }}>800+ lots · Stamps, coins, medals & banknotes · Live & online bidding</div>
+          <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', letterSpacing: '0.14em', color: '#FFAE55', textTransform: 'uppercase', marginBottom: '8px' }}>Next sale — June 2025</div>
+          <div style={{ fontFamily: 'var(--font-libre)', fontSize: '22px', color: '#fff', fontWeight: 700, marginBottom: '6px' }}>Stanley Gibbons Baldwin's Auction</div>
+          <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '13px', color: 'rgba(255,255,255,0.55)' }}>800+ lots · Stamps, coins, medals & banknotes · Live & online bidding</div>
         </div>
-        <Link href="/auctions" style={{ background: '#FFAE55', color: '#02383A', padding: '10px 24px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 700, borderRadius: '3px' }}>View full catalogue</Link>
+        <Link href="/auctions" style={{ background: '#FFAE55', color: '#02383A', padding: '12px 28px', fontFamily: 'var(--font-montserrat)', fontSize: '12px', fontWeight: 700, borderRadius: '3px', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
+          View full catalogue →
+        </Link>
       </div>
 
       {/* Featured coins */}
-      <ProductSection title="Featured coins" link="/coins" linkLabel="View all coins" products={coinProducts} onAdd={() => setBasketCount(c => c + 1)} />
+      <ProductSection
+        title="Featured coins"
+        link="/coins"
+        linkLabel="View all coins"
+        products={coinProducts}
+        onAdd={() => setBasketCount(c => c + 1)}
+      />
 
       {/* Footer */}
-      <footer style={{ background: '#1a1a1a', padding: '32px 32px 16px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '32px', marginBottom: '24px' }}>
+      <footer style={{ background: '#1a1a1a', padding: '40px 40px 20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '40px', marginBottom: '32px' }}>
           <div>
-            <div style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', color: '#FFAE55', marginBottom: '4px' }}>STANLEY GIBBONS BALDWIN'S</div>
-            <div style={{ fontFamily: 'var(--font-libre)', fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', marginBottom: '10px' }}>The home of stamps, coins & collectibles</div>
-            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7 }}>Two of the world's most respected names in philately and numismatics, united under one roof. Est. 1856 & 1872.</div>
+            <img src={LOGO} alt="Stanley Gibbons Baldwin's" style={{ height: '48px', width: 'auto', marginBottom: '14px', opacity: 0.9 }} />
+            <div style={{ fontFamily: 'var(--font-libre)', fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', marginBottom: '10px' }}>The home of stamps, coins & collectibles</div>
+            <div style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.8 }}>Two of the world's most respected names in philately and numismatics, united under one roof. Est. 1856 & 1872.</div>
           </div>
-          {[['Stamps', ['Great Britain', 'Commonwealth', 'Europe', 'Publications']], ['Coins', ['Gold coins', 'Ancient coins', 'World coins', 'Medals']], ['Company', ['Auctions', 'About us', 'Contact', 'Admin']]].map(([title, links]) => (
+          {[
+            ['Stamps', ['Great Britain', 'Commonwealth', 'Europe', 'Publications']],
+            ['Coins', ['Gold coins', 'Ancient coins', 'World coins', 'Medals']],
+            ['Company', ['Auctions', 'About us', 'Contact', 'Admin portal']],
+          ].map(([title, links]) => (
             <div key={title}>
-              <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', color: '#FFAE55', textTransform: 'uppercase', marginBottom: '10px' }}>{title}</div>
-              {links.map(l => <div key={l} style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', marginBottom: '6px', cursor: 'pointer' }}>{l}</div>)}
+              <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', color: '#FFAE55', textTransform: 'uppercase', marginBottom: '14px' }}>{title}</div>
+              {links.map(l => (
+                <div key={l} style={{ fontFamily: 'var(--font-opensans)', fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginBottom: '8px', cursor: 'pointer' }}>{l}</div>
+              ))}
             </div>
           ))}
         </div>
-        <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.1)', paddingTop: '14px', display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)' }}>© 2025 Stanley Gibbons Baldwin's Ltd. All rights reserved.</span>
-          <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)' }}>Terms · Privacy · Cookie policy</span>
+        <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.1)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between' }}>
+          <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>© 2025 Stanley Gibbons Baldwin's Ltd. All rights reserved.</span>
+          <span style={{ fontFamily: 'var(--font-opensans)', fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>Terms · Privacy · Cookie policy</span>
         </div>
       </footer>
+
     </div>
   )
 }
 
 function ProductSection({ title, link, linkLabel, products, onAdd }) {
   return (
-    <div style={{ padding: '36px 32px', background: '#fff' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '20px' }}>
+    <div style={{ padding: '48px 40px', background: '#fff' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
         <div>
-          <div style={{ fontFamily: 'var(--font-libre)', fontSize: '20px', color: '#02383A', fontWeight: 700 }}>{title}</div>
-          <div style={{ width: '48px', height: '2px', background: '#FFAE55', marginTop: '4px' }} />
+          <div style={{ fontFamily: 'var(--font-libre)', fontSize: '22px', color: '#02383A', fontWeight: 700 }}>{title}</div>
+          <div style={{ width: '48px', height: '2px', background: '#FFAE55', marginTop: '6px' }} />
         </div>
-        <Link href={link} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', color: '#FFAE55', fontWeight: 600 }}>{linkLabel} ›</Link>
+        <Link href={link} style={{ fontFamily: 'var(--font-montserrat)', fontSize: '11px', color: '#FFAE55', fontWeight: 600, letterSpacing: '0.04em' }}>{linkLabel} ›</Link>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
         {products.map((p, i) => (
           <div key={i} style={{ background: '#fff', borderRadius: '5px', border: '0.5px solid #e0ddd6', overflow: 'hidden' }}>
-            <div style={{ height: '110px', background: '#e8e3da', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <span style={{ fontFamily: 'var(--font-libre)', fontSize: '11px', color: '#888' }}>Image coming soon</span>
-              {p.badge && <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#02383A', color: '#FFAE55', fontSize: '9px', fontFamily: 'var(--font-montserrat)', fontWeight: 700, padding: '2px 7px', borderRadius: '2px' }}>{p.badge}</div>}
+            <div style={{ height: '160px', background: '#e8e3da', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+              <span style={{ fontFamily: 'var(--font-libre)', fontSize: '11px', color: '#aaa', fontStyle: 'italic' }}>Image coming soon</span>
+              {p.badge && (
+                <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#02383A', color: '#FFAE55', fontSize: '9px', fontFamily: 'var(--font-montserrat)', fontWeight: 700, padding: '3px 8px', borderRadius: '2px', letterSpacing: '0.06em' }}>{p.badge}</div>
+              )}
             </div>
-            <div style={{ padding: '10px 12px' }}>
-              <div style={{ fontSize: '9px', fontFamily: 'var(--font-montserrat)', color: '#FFAE55', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '3px' }}>{p.cat}</div>
-              <div style={{ fontFamily: 'var(--font-libre)', fontSize: '12px', color: '#1a1a1a', marginBottom: '5px', lineHeight: 1.4 }}>{p.name}</div>
-              <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '13px', fontWeight: 700, color: '#02383A' }}>{p.price}</div>
+            <div style={{ padding: '12px 14px' }}>
+              <div style={{ fontSize: '9px', fontFamily: 'var(--font-montserrat)', color: '#FFAE55', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '4px' }}>{p.cat}</div>
+              <div style={{ fontFamily: 'var(--font-libre)', fontSize: '13px', color: '#1a1a1a', marginBottom: '6px', lineHeight: 1.4 }}>{p.name}</div>
+              <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '14px', fontWeight: 700, color: '#02383A' }}>{p.price}</div>
             </div>
-            <button onClick={onAdd} style={{ display: 'block', width: '100%', background: '#02383A', color: '#fff', border: 'none', padding: '8px', fontFamily: 'var(--font-montserrat)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.06em' }}>Add to basket</button>
+            <button onClick={onAdd} style={{ display: 'block', width: '100%', background: '#02383A', color: '#fff', border: 'none', padding: '10px', fontFamily: 'var(--font-montserrat)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', cursor: 'pointer' }}>
+              Add to basket
+            </button>
           </div>
         ))}
       </div>
