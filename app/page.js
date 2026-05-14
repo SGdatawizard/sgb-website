@@ -7,18 +7,25 @@ export default function LandingPage() {
   return (
     <div style={{ background: '#f5f5f3', minHeight: '100vh' }}>
 
-      {/* Minimal header — no nav, just logo + login */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, padding: '0 48px', height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '18px', color: '#fff', letterSpacing: '0.02em' }}>
-          SG <span style={{ color: '#a3925f', fontWeight: '400' }}>Vision</span>
+      {/* Landing header — logo left, login right, no nav */}
+      <div style={{ position: 'relative', zIndex: 20, height: '80px', background: '#293451', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 48px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          {/* SG crest box */}
+          <div style={{ width: '52px', height: '52px', border: '1.5px solid rgba(255,255,255,0.5)', borderRadius: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: '700', fontSize: '18px', color: '#fff', letterSpacing: '0.02em', lineHeight: 1 }}>SG</div>
+          </div>
+          <div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: '700', fontSize: '15px', color: '#fff', letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1, marginBottom: '3px' }}>Stanley Gibbons</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: '400', fontSize: '10px', color: 'rgba(255,255,255,0.55)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>The home of stamp collecting</div>
+          </div>
         </div>
-        <a href="/home" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.9)', textDecoration: 'none', padding: '8px 20px', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '5px', letterSpacing: '0.04em' }}>
-          Login
+        <a href="/home" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.85)', textDecoration: 'none', padding: '9px 24px', border: '1px solid rgba(255,255,255,0.35)', borderRadius: '5px', letterSpacing: '0.04em' }}>
+          Log in
         </a>
       </div>
 
       {/* Hero */}
-      <div style={{ position: 'relative', width: '100%', height: '100vh', minHeight: '600px', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 80px)', minHeight: '560px', overflow: 'hidden' }}>
         <img src={IMG('GB0048.jpg')} alt="Penny Black" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(41,52,81,0.93) 0%, rgba(41,52,81,0.78) 55%, rgba(41,52,81,0.25) 100%)' }} />
 
