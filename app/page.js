@@ -19,13 +19,13 @@ export default function LandingPage() {
             <div style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: '400', fontSize: '10px', color: 'rgba(255,255,255,0.55)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>The home of stamp collecting</div>
           </div>
         </div>
-        <a href="/home" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.85)', textDecoration: 'none', padding: '9px 24px', border: '1.5px solid #a3925f', borderRadius: '5px', letterSpacing: '0.04em', color: '#a3925f' }}>
+        <a href="/home" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.85)', textDecoration: 'none', padding: '9px 24px', border: '1.5px solid #a3925f', borderRadius: '5px', letterSpacing: '0.04em', color: '#fff' }}>
           Log in
         </a>
       </div>
 
       {/* Hero */}
-      <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 168px)', minHeight: '420px', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 196px)', minHeight: '380px', overflow: 'hidden' }}>
         <img src={IMG('GB0048.jpg')} alt="Penny Black" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(41,52,81,0.93) 0%, rgba(41,52,81,0.78) 55%, rgba(41,52,81,0.25) 100%)' }} />
 
@@ -43,10 +43,10 @@ export default function LandingPage() {
               The most comprehensive philatelic catalogue ever built. Powered by 170 years of Stanley Gibbons expertise.
             </p>
             <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-              <a href="/account" style={{ display: 'inline-block', padding: '15px 36px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
+              <a href="/account" style={{ display: 'inline-block', padding: '15px 36px', borderRadius: '6px', border: '1.5px solid #a3925f', background: 'transparent', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
                 Get started
               </a>
-              <a href="/account" style={{ display: 'inline-block', padding: '14px 36px', borderRadius: '6px', border: '1.5px solid rgba(255,255,255,0.5)', background: 'transparent', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
+              <a href="/account" style={{ display: 'inline-block', padding: '14px 0', border: 'none', background: 'transparent', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', letterSpacing: '0.03em', whiteSpace: 'nowrap', borderBottom: '1.5px solid #a3925f' }}>
                 View pricing
               </a>
             </div>
