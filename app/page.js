@@ -142,6 +142,118 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* Pricing */}
+      <div style={{ background: '#fff', padding: '80px 80px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '32px', fontWeight: '600', color: '#222', marginBottom: '10px' }}>Pricing</div>
+          <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: '#888' }}>Choose the plan that's right for your collecting needs.</div>
+        </div>
+
+        {/* Billing toggle */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', border: '0.5px solid #ddd', borderRadius: '6px', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#222', minWidth: '240px', justifyContent: 'space-between', cursor: 'pointer' }}>
+            <span>Pay annually <span style={{ color: '#1a5c1a', fontWeight: '600' }}>save 17%</span></span>
+            <span style={{ color: '#888', fontSize: '16px' }}>▾</span>
+          </div>
+        </div>
+
+        {/* Plans grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px', maxWidth: '960px', margin: '0 auto' }}>
+
+          {/* Great Britain */}
+          <div style={{ border: '0.5px solid #ddd', borderRadius: '8px', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '0' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#222', marginBottom: '16px' }}>Great Britain</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
+              <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '700', color: '#1a5c1a' }}>£39.99</span>
+              <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa', textDecoration: 'line-through' }}>£47.88</span>
+            </div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '24px' }}>per year</div>
+
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#222', marginBottom: '12px' }}>Select level of data</div>
+            <div style={{ border: '0.5px solid #ddd', borderRadius: '6px', padding: '14px 16px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#222', marginBottom: '4px' }}>Focused data</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', lineHeight: '1.5' }}>All core SG numbers listed and priced.<br />Does not include plates and varieties</div>
+              </div>
+              <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: '2px solid #293451', background: '#293451', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }} />
+              </div>
+            </div>
+            <div style={{ border: '0.5px solid #ddd', borderRadius: '6px', padding: '14px 16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#222', marginBottom: '2px' }}>Comprehensive data</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888' }}>+£10.00 per year</div>
+              </div>
+              <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1.5px solid #ddd', flexShrink: 0 }} />
+            </div>
+
+            <a href="/account" style={{ display: 'block', padding: '13px', background: '#293451', color: '#fff', borderRadius: '6px', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', textDecoration: 'none', textAlign: 'center', marginBottom: '12px' }}>Subscribe now</a>
+            <div style={{ textAlign: 'center', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#293451', textDecoration: 'underline', cursor: 'pointer' }}>Or start a 7-day free trial</div>
+          </div>
+
+          {/* Great Britain & Commonwealth */}
+          <div style={{ border: '0.5px solid #ddd', borderRadius: '8px', padding: '28px 24px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#222', marginBottom: '16px' }}>Great Britain &amp; Commonwealth</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
+              <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '700', color: '#1a5c1a' }}>£49.99</span>
+              <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa', textDecoration: 'line-through' }}>£59.88</span>
+            </div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '24px' }}>per year</div>
+
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#222', marginBottom: '12px' }}>Select level of data</div>
+            <div style={{ border: '0.5px solid #ddd', borderRadius: '6px', padding: '14px 16px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#222', marginBottom: '4px' }}>Focused data</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', lineHeight: '1.5' }}>All core SG numbers listed and priced.<br />Does not include plates and varieties</div>
+              </div>
+              <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: '2px solid #293451', background: '#293451', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }} />
+              </div>
+            </div>
+            <div style={{ border: '0.5px solid #ddd', borderRadius: '6px', padding: '14px 16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#222', marginBottom: '2px' }}>Comprehensive data</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888' }}>+£10.00 per year</div>
+              </div>
+              <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1.5px solid #ddd', flexShrink: 0 }} />
+            </div>
+
+            <a href="/account" style={{ display: 'block', padding: '13px', background: '#293451', color: '#fff', borderRadius: '6px', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', textDecoration: 'none', textAlign: 'center', marginBottom: '12px' }}>Subscribe now</a>
+            <div style={{ textAlign: 'center', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#293451', textDecoration: 'underline', cursor: 'pointer' }}>Or start a 7-day free trial</div>
+          </div>
+
+          {/* Whole World */}
+          <div style={{ border: '0.5px solid #ddd', borderRadius: '8px', padding: '28px 24px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#222', marginBottom: '16px' }}>Whole World</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
+              <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '700', color: '#1a5c1a' }}>£59.99</span>
+              <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa', textDecoration: 'line-through' }}>£71.88</span>
+            </div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '24px' }}>per year</div>
+
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#222', marginBottom: '12px' }}>Select level of data</div>
+            <div style={{ border: '0.5px solid #ddd', borderRadius: '6px', padding: '14px 16px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#222', marginBottom: '4px' }}>Focused data</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', lineHeight: '1.5' }}>All core SG numbers listed and priced.<br />Does not include plates and varieties</div>
+              </div>
+              <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: '2px solid #293451', background: '#293451', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }} />
+              </div>
+            </div>
+            <div style={{ border: '0.5px solid #ddd', borderRadius: '6px', padding: '14px 16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#222', marginBottom: '2px' }}>Comprehensive data</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888' }}>+£10.00 per year</div>
+              </div>
+              <div style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1.5px solid #ddd', flexShrink: 0 }} />
+            </div>
+
+            <div style={{ display: 'block', padding: '13px', background: '#ccc', color: '#fff', borderRadius: '6px', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', textAlign: 'center', marginBottom: '12px' }}>Coming soon</div>
+          </div>
+
+        </div>
+      </div>
       {/* CTA banner */}
       <div style={{ position: 'relative', overflow: 'hidden', minHeight: '320px', display: 'flex', alignItems: 'center' }}>
         <img src={IMG('GB0050.jpg')} alt="Queen Elizabeth engraving" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
