@@ -250,7 +250,7 @@ export default function Home() {
 
       {/* My Collection */}
       <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '320px', textDecoration: 'none' }}>
-        <div style={{ background: '#1e2a3a', padding: '32px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ background: '#1a3a2e', padding: '32px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '14px' }}>My Collection</div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>41</div>
@@ -261,7 +261,7 @@ export default function Home() {
         </div>
         <div style={{ position: 'relative', overflow: 'hidden', height: '320px' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/7.webp" alt="Stamp collection" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #293451 0%, transparent 40%)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #1a3a2e 0%, transparent 40%)' }} />
         </div>
       </a>
 
