@@ -249,15 +249,15 @@ export default function Home() {
       {/* ── Account sections — Option A alternating full-width strips ── */}
 
       {/* My Collection */}
-      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '260px', textDecoration: 'none' }}>
-        <div style={{ background: '#293451', padding: '52px 72px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '130px', textDecoration: 'none' }}>
+        <div style={{ background: '#293451', padding: '28px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>My Collection</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '40px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>41</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '20px' }}>items catalogued · £12,450 total value</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.7', maxWidth: '380px' }}>Track catalogue values, record what you paid, and organise your entire collection by country and series. See what's appreciating and what isn't.</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '24px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>41</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '10px' }}>items catalogued · £12,450 total value</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', maxWidth: '380px' }}>Track catalogue values, record what you paid, and organise your entire collection by country and series. See what's appreciating and what isn't.</div>
           </div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '28px' }}>View collection →</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '14px' }}>View collection →</div>
         </div>
         <div style={{ position: 'relative', overflow: 'hidden' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/7.webp" alt="Stamp collection" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -266,32 +266,32 @@ export default function Home() {
       </a>
 
       {/* Wishlist */}
-      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '260px', textDecoration: 'none' }}>
+      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '130px', textDecoration: 'none' }}>
         <div style={{ position: 'relative', overflow: 'hidden' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/16.webp" alt="Stamps on wishlist" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(270deg, #7a1a2e 0%, transparent 40%)' }} />
         </div>
-        <div style={{ background: '#7a1a2e', padding: '52px 72px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ background: '#7a1a2e', padding: '28px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Wishlist</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '40px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>12</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.35)', marginBottom: '20px' }}>stamps wanted · £8,200 catalogue value</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.7', maxWidth: '380px' }}>Stamps you want but don't yet own. Flag anything from the catalogue and track how values move over time while you wait for the right copy.</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '24px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>12</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.35)', marginBottom: '10px' }}>stamps wanted · £8,200 catalogue value</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', maxWidth: '380px' }}>Stamps you want but don't yet own. Flag anything from the catalogue and track how values move over time while you wait for the right copy.</div>
           </div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em', marginTop: '28px' }}>View wishlist →</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em', marginTop: '14px' }}>View wishlist →</div>
         </div>
       </a>
 
       {/* SGB 100 */}
-      <a href="/sgb100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '260px', textDecoration: 'none' }}>
-        <div style={{ background: '#0a0e1a', padding: '52px 72px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <a href="/sgb100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '130px', textDecoration: 'none' }}>
+        <div style={{ background: '#0a0e1a', padding: '28px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>SGB 100</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '600', color: '#fff', lineHeight: '1.2', marginBottom: '6px' }}>Performance index</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.3)', marginBottom: '20px' }}>Base 1,000 · 2005</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: 'rgba(255,255,255,0.5)', lineHeight: '1.7', maxWidth: '380px' }}>The 100 best-performing stamps by catalogue value appreciation since 2005. A performance index built on 170 years of Stanley Gibbons data.</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '18px', fontWeight: '600', color: '#fff', lineHeight: '1.2', marginBottom: '4px' }}>Performance index</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.3)', marginBottom: '10px' }}>Base 1,000 · 2005</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.5)', lineHeight: '1.6', maxWidth: '380px' }}>The 100 best-performing stamps by catalogue value appreciation since 2005. A performance index built on 170 years of Stanley Gibbons data.</div>
           </div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '28px' }}>View index →</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '14px' }}>View index →</div>
         </div>
         <div style={{ position: 'relative', overflow: 'hidden' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/3.webp" alt="Rare stamps" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -301,24 +301,24 @@ export default function Home() {
 
       {/* Budget + Looking to sell + Community — three compact cards */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0' }}>
-        <a href="/account" style={{ background: '#fff', borderTop: '0.5px solid #eee', borderRight: '0.5px solid #eee', padding: '36px 40px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <a href="/account" style={{ background: '#fff', borderTop: '0.5px solid #eee', borderRight: '0.5px solid #eee', padding: '20px 28px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Budget tracker</div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '600', color: '#293451' }}>£142.50</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451' }}>£142.50</div>
           <div style={{ height: '3px', background: '#eee', borderRadius: '2px', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: '29%', background: '#293451', borderRadius: '2px' }} />
           </div>
           <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#666', lineHeight: '1.6', flex: 1 }}>Set a monthly spending limit and track every purchase against it.</div>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.04em' }}>View budget →</div>
         </a>
-        <a href="/account" style={{ background: '#f5f5f3', borderTop: '0.5px solid #eee', borderRight: '0.5px solid #eee', padding: '36px 40px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <a href="/account" style={{ background: '#f5f5f3', borderTop: '0.5px solid #eee', borderRight: '0.5px solid #eee', padding: '20px 28px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Looking to sell</div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#293451' }}>Flagged items</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451' }}>Flagged items</div>
           <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#666', lineHeight: '1.6', flex: 1 }}>Mark stamps you'd consider selling. Reach £500 catalogue value and request a free expert valuation.</div>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.04em' }}>View flagged →</div>
         </a>
-        <a href="/community" style={{ background: '#f5f5f3', borderTop: '0.5px solid #eee', padding: '36px 40px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <a href="/community" style={{ background: '#f5f5f3', borderTop: '0.5px solid #eee', padding: '20px 28px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Community</div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#293451' }}>Discussions</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451' }}>Discussions</div>
           <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#666', lineHeight: '1.6', flex: 1 }}>Share finds, ask questions and connect with collectors and dealers from around the world.</div>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.04em' }}>Go to community →</div>
         </a>
