@@ -19,13 +19,13 @@ export default function LandingPage() {
             <div style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: '400', fontSize: '10px', color: 'rgba(255,255,255,0.55)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>The home of stamp collecting</div>
           </div>
         </div>
-        <a href="/home" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.85)', textDecoration: 'none', padding: '9px 24px', border: '1px solid rgba(255,255,255,0.35)', borderRadius: '5px', letterSpacing: '0.04em' }}>
+        <a href="/home" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.85)', textDecoration: 'none', padding: '9px 24px', border: '1.5px solid #a3925f', borderRadius: '5px', letterSpacing: '0.04em', color: '#a3925f' }}>
           Log in
         </a>
       </div>
 
       {/* Hero */}
-      <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 80px)', minHeight: '560px', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 168px)', minHeight: '420px', overflow: 'hidden' }}>
         <img src={IMG('GB0048.jpg')} alt="Penny Black" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(41,52,81,0.93) 0%, rgba(41,52,81,0.78) 55%, rgba(41,52,81,0.25) 100%)' }} />
 
@@ -55,7 +55,7 @@ export default function LandingPage() {
       </div>
 
       {/* Stats bar */}
-      <div style={{ background: '#293451', padding: '32px 80px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr' }}>
+      <div style={{ background: '#293451', padding: '22px 80px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr' }}>
         {[
           { value: '500,000+', label: 'Stamps catalogued' },
           { value: '200+', label: 'Countries and territories' },
