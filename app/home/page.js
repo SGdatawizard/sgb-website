@@ -249,7 +249,7 @@ export default function Home() {
       {/* ── Account sections — Option A alternating full-width strips ── */}
 
       {/* My Collection */}
-      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '130px', textDecoration: 'none' }}>
+      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '160px', textDecoration: 'none' }}>
         <div style={{ background: '#293451', padding: '28px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>My Collection</div>
@@ -259,15 +259,15 @@ export default function Home() {
           </div>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '14px' }}>View collection →</div>
         </div>
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', height: '160px' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/7.webp" alt="Stamp collection" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #293451 0%, transparent 40%)' }} />
         </div>
       </a>
 
       {/* Wishlist */}
-      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '130px', textDecoration: 'none' }}>
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
+      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '160px', textDecoration: 'none' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', height: '160px' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/16.webp" alt="Stamps on wishlist" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(270deg, #7a1a2e 0%, transparent 40%)' }} />
         </div>
@@ -283,7 +283,7 @@ export default function Home() {
       </a>
 
       {/* SGB 100 */}
-      <a href="/sgb100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '130px', textDecoration: 'none' }}>
+      <a href="/sgb100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '160px', textDecoration: 'none' }}>
         <div style={{ background: '#0a0e1a', padding: '28px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>SGB 100</div>
@@ -293,7 +293,7 @@ export default function Home() {
           </div>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '14px' }}>View index →</div>
         </div>
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', height: '160px' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/3.webp" alt="Rare stamps" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #0a0e1a 0%, transparent 40%)' }} />
         </div>
