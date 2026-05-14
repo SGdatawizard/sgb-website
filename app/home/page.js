@@ -249,53 +249,50 @@ export default function Home() {
       {/* ── Account sections — Option A alternating full-width strips ── */}
 
       {/* My Collection */}
-      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '320px', textDecoration: 'none' }}>
-        <div style={{ background: '#1a3a2e', padding: '32px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '380px', textDecoration: 'none' }}>
+        <div style={{ background: '#1a3a2e', padding: '40px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '14px' }}>My Collection</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>41</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '48px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>41</div>
             <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '14px' }}>items catalogued · £12,450 total value</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.7', maxWidth: '420px' }}>Track catalogue values, record what you paid, and organise your entire collection by country and series. See what's appreciating and what isn't.</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '16px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.75', maxWidth: '440px' }}>Track catalogue values, record what you paid, and organise your entire collection by country and series. See what's appreciating and what isn't.</div>
           </div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '20px' }}>View collection →</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '24px' }}>View collection →</div>
         </div>
-        <div style={{ position: 'relative', overflow: 'hidden', height: '320px' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', height: '380px' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/7.webp" alt="Stamp collection" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #1a3a2e 0%, transparent 40%)' }} />
         </div>
       </a>
 
       {/* Wishlist */}
-      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '320px', textDecoration: 'none' }}>
-        <div style={{ position: 'relative', overflow: 'hidden', height: '320px' }}>
+      <a href="/account" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '380px', textDecoration: 'none' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', height: '380px' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/16.webp" alt="Stamps on wishlist" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(270deg, #7a1a2e 0%, transparent 40%)' }} />
         </div>
-        <div style={{ background: '#7a1a2e', padding: '32px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ background: '#7a1a2e', padding: '40px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Wishlist</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>12</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '48px', fontWeight: '600', color: '#fff', lineHeight: '1', marginBottom: '6px' }}>12</div>
             <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.35)', marginBottom: '14px' }}>stamps wanted · £8,200 catalogue value</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.7', maxWidth: '420px' }}>Stamps you want but don't yet own. Flag anything from the catalogue and track how values move over time while you wait for the right copy.</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '16px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.75', maxWidth: '440px' }}>Stamps you want but don't yet own. Flag anything from the catalogue and track how values move over time while you wait for the right copy.</div>
           </div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em', marginTop: '20px' }}>View wishlist →</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em', marginTop: '24px' }}>View wishlist →</div>
         </div>
       </a>
 
       {/* SGB 100 */}
-      <a href="/sgb100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '320px', textDecoration: 'none' }}>
-        <div style={{ background: '#0a0e1a', padding: '32px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <a href="/sgb100" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '380px', textDecoration: 'none' }}>
+        <div style={{ background: '#0a0e1a', padding: '40px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '14px' }}>SGB 100</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '24px', fontWeight: '600', color: '#fff', lineHeight: '1.2', marginBottom: '8px' }}>Performance index</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '30px', fontWeight: '600', color: '#fff', lineHeight: '1.2', marginBottom: '10px' }}>Performance index</div>
             <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.3)', marginBottom: '14px' }}>Base 1,000 · 2005</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: 'rgba(255,255,255,0.5)', lineHeight: '1.7', maxWidth: '420px' }}>The 100 best-performing stamps by catalogue value appreciation since 2005. A performance index built on 170 years of Stanley Gibbons data.</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: '1.75', maxWidth: '440px' }}>The 100 best-performing stamps by catalogue value appreciation since 2005. A performance index built on 170 years of Stanley Gibbons data.</div>
           </div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '20px' }}>View index →</div>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '24px' }}>View index →</div>
         </div>
-        <div style={{ position: 'relative', overflow: 'hidden', height: '320px' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', height: '380px' }}>
           <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/3.webp" alt="Rare stamps" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #0a0e1a 0%, transparent 40%)' }} />
         </div>
       </a>
 
