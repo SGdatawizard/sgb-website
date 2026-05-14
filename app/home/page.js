@@ -4,47 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 
-const FILTER_FIELDS = [
-  { value: 'sg_number', label: 'SG number', type: 'stamp' },
-  { value: 'denomination', label: 'Denomination', type: 'stamp' },
-  { value: 'colour_primary', label: 'Colour', type: 'stamp' },
-  { value: 'year_issued', label: 'Year issued', type: 'stamp' },
-  { value: 'watermark', label: 'Watermark', type: 'stamp' },
-  { value: 'printer', label: 'Printer', type: 'stamp' },
-  { value: 'perforation_gauge', label: 'Perforation', type: 'variation' },
-  { value: 'is_error', label: 'Error stamp', type: 'boolean' },
-  { value: 'is_proof', label: 'Specimen / Proof', type: 'boolean' },
-  { value: 'is_booklet_pane', label: 'Booklet pane', type: 'boolean' },
-  { value: 'price_min', label: 'Min value (£)', type: 'price' },
-  { value: 'price_max', label: 'Max value (£)', type: 'price' },
-]
-
-const TEXT_OPERATORS = [
-  { value: 'includes', label: 'includes' },
-  { value: 'excludes', label: 'does not include' },
-  { value: 'is', label: 'is' },
-  { value: 'is_not', label: 'is not' },
-  { value: 'is_empty', label: 'is empty' },
-]
-const NUMBER_OPERATORS = [
-  { value: 'gte', label: 'is at least' },
-  { value: 'lte', label: 'is at most' },
-  { value: 'is', label: 'is exactly' },
-]
-const BOOLEAN_OPERATORS = [
-  { value: 'is_true', label: 'is true' },
-  { value: 'is_false', label: 'is false' },
-]
-function getOperators(field) {
-  const f = FILTER_FIELDS.find(x => x.value === field)
-  if (!f) return TEXT_OPERATORS
-  if (f.type === 'boolean') return BOOLEAN_OPERATORS
-  if (f.value === 'year_issued' || f.value === 'price_min' || f.value === 'price_max') return NUMBER_OPERATORS
-  return TEXT_OPERATORS
-}
-function newRow() {
-  return { id: Math.random().toString(36).slice(2), field: 'sg_number', operator: 'includes', value: '' }
-}
+const SUPABASE_URL = 'https://ambzwvkbxpkjuwmjnvgj.supabase.co'
+const IMG = (name) => `${SUPABASE_URL}/storage/v1/object/public/homepage-images/${name}`
 
 const COUNTRIES = [
   { label: 'Great Britain', iso: 'GB', flag: '🇬🇧' },
@@ -84,43 +45,111 @@ const THEMES = [
   { label: 'Religion', icon: '⛪' },
 ]
 
-const RECOMMENDED = [
-  { sgNum: 'SG 1', desc: '1840 1d. black', country: 'Great Britain', condition: 'Fine used', catValue: '£2,500', reason: 'On your wishlist', imgFile: 'GB0048.jpg' },
-  { sgNum: 'SG 128', desc: '1933 1d. black & scarlet', country: 'Falkland Islands', condition: 'Unmounted mint', catValue: '£850', reason: 'Similar to your collection', imgFile: 'GB0040.jpg' },
-  { sgNum: 'SG 450', desc: '1948 Silver Wedding 10s.', country: 'Great Britain', condition: 'Mint', catValue: '£320', reason: 'Popular in your area', imgFile: 'GB0050.jpg' },
-  { sgNum: 'SG 2', desc: '1840 2d. blue', country: 'Great Britain', condition: 'Used', catValue: '£1,200', reason: 'Completes your set', imgFile: 'GB0043_1.jpg' },
+const COUNTRY_GROUPS = [
+  { group: 'Great Britain', countries: ['GB'] },
+  { group: 'Commonwealth', countries: ['AU', 'CA', 'NZ', 'BM', 'JM', 'HK', 'FK'] },
+  { group: 'Africa', countries: ['ZA', 'NG', 'EG'] },
+  { group: 'Asia & Middle East', countries: ['IN', 'IL'] },
+  { group: 'Europe', countries: ['FR', 'DE'] },
+  { group: 'Americas', countries: ['US', 'CA'] },
 ]
 
+const THEME_GROUPS = [
+  { group: 'Nature', themes: ['Animals', 'Birds', 'Flowers', 'Nature'] },
+  { group: 'Transport', themes: ['Ships', 'Vehicles', 'Aircraft'] },
+  { group: 'History & Culture', themes: ['Royalty', 'Military', 'Religion', 'People', 'Art'] },
+  { group: 'Geography', themes: ['Maps', 'Architecture'] },
+  { group: 'Sport & Science', themes: ['Sports', 'Space'] },
+]
 
-function NewInImage({ url, fallback }) {
-  const [src, setSrc] = useState(url)
-  const [tried, setTried] = useState(false)
-  const [error, setError] = useState(false)
-  function handleError() {
-    if (!tried && fallback) { setSrc(fallback); setTried(true) }
-    else setError(true)
-  }
-  if (error) return <div style={{ width: '84px', height: '84px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: '24px' }}>📮</div>
-  return <img src={src} alt="Stamp" onError={handleError} style={{ width: '84px', height: '84px', objectFit: 'contain', display: 'block' }} />
+const ACCOUNT_SECTIONS = [
+  {
+    id: 'collection',
+    label: 'My Collection',
+    href: '/account',
+    bg: '#293451',
+    textColor: '#fff',
+    accentColor: '#a3925f',
+    img: IMG('GB0048.jpg'),
+    desc: 'Your complete philatelic collection in one place. Track catalogue values, record what you paid, and organise by country and series.',
+    stat: '41 items',
+    cta: 'View collection →',
+  },
+  {
+    id: 'wishlist',
+    label: 'Wishlist',
+    href: '/account',
+    bg: '#7a1a2e',
+    textColor: '#fff',
+    accentColor: 'rgba(255,255,255,0.6)',
+    img: IMG('GB0040.jpg'),
+    desc: 'Stamps you want but don\'t yet own. Flag items from the catalogue and track how their values move over time.',
+    stat: '12 stamps',
+    cta: 'View wishlist →',
+  },
+  {
+    id: 'sgb100',
+    label: 'SGB 100',
+    href: '/sgb100',
+    bg: '#0a0e1a',
+    textColor: '#fff',
+    accentColor: '#a3925f',
+    img: IMG('GB0043_1.jpg'),
+    desc: 'The 100 best-performing stamps by catalogue value appreciation since 2005. A performance index for serious collectors.',
+    stat: 'Index: 2,847 pts',
+    cta: 'View index →',
+  },
+  {
+    id: 'budget',
+    label: 'Budget Tracker',
+    href: '/account',
+    bg: '#fff',
+    textColor: '#293451',
+    accentColor: '#888',
+    img: IMG('GB0050.jpg'),
+    desc: 'Set a monthly spending limit and track every purchase against it. Stay on top of what you\'re spending on stamps.',
+    stat: '£142.50 remaining',
+    cta: 'View budget →',
+  },
+  {
+    id: 'sell',
+    label: 'Looking to Sell',
+    href: '/account',
+    bg: '#f5f5f3',
+    textColor: '#293451',
+    accentColor: '#888',
+    img: IMG('GB0048.jpg'),
+    desc: 'Flag stamps from your collection that you\'d consider selling. Once you reach £500 catalogue value, request a free expert valuation.',
+    stat: null,
+    cta: 'View flagged →',
+  },
+  {
+    id: 'community',
+    label: 'Community',
+    href: '/community',
+    bg: '#f5f5f3',
+    textColor: '#293451',
+    accentColor: '#888',
+    img: IMG('GB0040.jpg'),
+    desc: 'Discuss stamps, share finds and ask questions. Connect with collectors, dealers and experts from around the world.',
+    stat: null,
+    cta: 'Go to community →',
+  },
+]
+
+function lotUrl(sale) {
+  const SGB_BASE = 'https://sgbaldwins.com/auctions/'
+  if (sale.auction_slug && sale.lot_number) return SGB_BASE + sale.auction_slug + '/lot/' + sale.lot_number
+  return SGB_BASE + 'upcoming-auctions'
 }
 
 export default function Home() {
   const [query, setQuery] = useState('')
-  const [country, setCountry] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
-  const [showAdvanced, setShowAdvanced] = useState(false)
-  const [activeFilters, setActiveFilters] = useState([])
-  const [filterField, setFilterField] = useState('sg_number')
-  const [filterValue, setFilterValue] = useState('')
-  const [filterRows, setFilterRows] = useState([newRow()])
   const [realisations, setRealisations] = useState([])
-  const [newIn, setNewIn] = useState([])
-  const [openCountryGroup, setOpenCountryGroup] = useState('Great Britain')
-  const [openThemeGroup, setOpenThemeGroup] = useState('Animals')
-  const [collectionCount, setCollectionCount] = useState(41)
-  const [wishlistCount, setWishlistCount] = useState(12)
-  const [budgetRemaining, setBudgetRemaining] = useState(142.50)
-  const [budgetTotal, setBudgetTotal] = useState(200)
+  const [openCountrySection, setOpenCountrySection] = useState(false)
+  const [openThemeSection, setOpenThemeSection] = useState(false)
+  const [openCountryGroup, setOpenCountryGroup] = useState(null)
+  const [openThemeGroup, setOpenThemeGroup] = useState(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -137,58 +166,11 @@ export default function Home() {
       if (data) setRealisations(data)
     }
     fetchRealisations()
-    async function fetchNewIn() {
-      const { data } = await supabase
-        .from('stamp_variations')
-        .select(`
-          id, sg_sub_number, sg_cat_value_mint, sg_cat_value_used, colour_shade,
-          stamps ( sg_number, denomination, colour_primary, year_issued, country_iso, stamp_series ( name, year_start ) )
-        `)
-        .not('sg_cat_value_mint', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(6)
-      if (data) setNewIn(data)
-    }
-    fetchNewIn()
   }, [])
 
-  function formatDate(dateStr) {
-    if (!dateStr) return '—'
-    return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-  }
-
-  function countryName(iso) {
-    const map = { FK: 'Falkland Islands', GB: 'Great Britain', US: 'United States', AU: 'Australia', CA: 'Canada', NZ: 'New Zealand', BM: 'Bermuda' }
-    return map[iso] || iso || '—'
-  }
-
-  function lotUrl(sale) {
-    const SGB_BASE = 'https://sgbaldwins.com/auctions/'
-    if (sale.auction_slug && sale.lot_number) return SGB_BASE + sale.auction_slug + '/lot/' + sale.lot_number
-    return SGB_BASE + 'upcoming-auctions'
-  }
-
-  function addRow() { setFilterRows(prev => [...prev, newRow()]) }
-  function removeRow(id) { setFilterRows(prev => prev.filter(r => r.id !== id)) }
-  function updateRow(id, key, value) {
-    setFilterRows(prev => prev.map(r => {
-      if (r.id !== id) return r
-      const updated = { ...r, [key]: value }
-      if (key === 'field') { updated.operator = getOperators(value)[0].value; updated.value = '' }
-      return updated
-    }))
-  }
-  function clearAdvanced() { setFilterRows([newRow()]) }
-  const advancedFilterCount = filterRows.filter(r => r.value !== '' || r.operator === 'is_true' || r.operator === 'is_false' || r.operator === 'is_empty').length
-
   function handleSearch() {
-    const params = new URLSearchParams()
-    if (query.trim()) params.set('q', query.trim())
-    if (country) params.set('country', country)
-    // Pass advanced filter rows as JSON for the catalogue to parse
-    const activeRows = filterRows.filter(r => r.value !== '' || r.operator === 'is_true' || r.operator === 'is_false' || r.operator === 'is_empty')
-    if (activeRows.length > 0) params.set('filters', JSON.stringify(activeRows))
-    router.push('/catalogue?' + params.toString())
+    if (query.trim()) router.push('/catalogue?q=' + encodeURIComponent(query.trim()))
+    else router.push('/catalogue')
   }
 
   function handleKeyDown(e) {
@@ -203,399 +185,167 @@ export default function Home() {
     router.push('/catalogue?q=' + encodeURIComponent(theme))
   }
 
-  const budgetPct = Math.min(100, ((budgetTotal - budgetRemaining) / budgetTotal) * 100)
+  function formatDate(dateStr) {
+    if (!dateStr) return '—'
+    return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  }
 
-  const inputStyle = {
-    fontFamily: 'Open Sans, sans-serif',
-    fontSize: '13px',
-    outline: 'none',
-    border: '0.5px solid #ddd',
-    borderRadius: '6px',
-    padding: '9px 12px',
-    color: '#222',
-    background: '#fff',
+  function countryName(iso) {
+    const map = { FK: 'Falkland Islands', GB: 'Great Britain', US: 'United States', AU: 'Australia', CA: 'Canada', NZ: 'New Zealand', BM: 'Bermuda' }
+    return map[iso] || iso || '—'
   }
 
   return (
     <div style={{ background: '#f5f5f3', minHeight: '100vh' }}>
 
-      {/* ── Search hero ─────────────────────────────────────────────── */}
+      {/* ── Search ──────────────────────────────────────────────────── */}
       <div style={{ background: '#293451', padding: '48px 80px 40px' }}>
-        <div style={{ maxWidth: '820px', margin: '0 auto' }}>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
             Stanley Gibbons Vision
           </div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '600', color: '#fff', marginBottom: '24px', textAlign: 'center' }}>
-            Search the catalogue
-          </div>
-
-          {/* Main search bar + country dropdown */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
+          <h1 style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '32px', fontWeight: '600', color: '#fff', margin: '0 0 28px', lineHeight: '1.2' }}>
+            What are you looking for?
+          </h1>
+          <div style={{ display: 'flex', gap: '10px' }}>
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Search by SG number, series name, year, colour, denomination..."
-              style={{ flex: 1, padding: '11px 16px', borderRadius: '6px', border: 'none', background: 'rgba(255,255,255,0.12)', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', outline: 'none' }}
+              placeholder="Search stamps, countries, series, SG numbers..."
+              style={{ flex: 1, padding: '14px 20px', borderRadius: '6px', border: 'none', background: 'rgba(255,255,255,0.12)', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', outline: 'none' }}
             />
-            <select
-              value={country}
-              onChange={e => setCountry(e.target.value)}
-              style={{ padding: '11px 14px', borderRadius: '6px', border: 'none', background: '#344467', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', outline: 'none', minWidth: '200px' }}
-            >
-              <option value="">Select country</option>
-              {COUNTRIES.map(c => (
-                <option key={c.iso} value={c.iso}>{c.flag} {c.label}</option>
-              ))}
-            </select>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              style={{ padding: '11px 18px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.3)', background: showFilters ? 'rgba(163,146,95,0.2)' : 'transparent', color: showFilters || advancedFilterCount > 0 ? '#a3925f' : 'rgba(255,255,255,0.8)', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap' }}
-            >
-              {'Filters' + (advancedFilterCount > 0 ? ' (' + advancedFilterCount + ')' : '')}
-            </button>
             <button
               onClick={handleSearch}
-              style={{ padding: '11px 24px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', cursor: 'pointer', whiteSpace: 'nowrap' }}
+              style={{ padding: '14px 32px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', cursor: 'pointer', whiteSpace: 'nowrap' }}
             >
               Search
             </button>
           </div>
+          <div style={{ marginTop: '12px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
+            Try: "Penny Black", "SG 1", "1933 Centenary", "Falkland Islands"
+          </div>
+        </div>
+      </div>
 
-          {/* Standard filters panel */}
-          {showFilters && (
-            <div style={{ marginTop: '4px', paddingTop: '16px', borderTop: '0.5px solid rgba(255,255,255,0.15)' }}>
-              {filterRows.map((row, index) => {
-                const field = FILTER_FIELDS.find(x => x.value === row.field)
-                const operators = getOperators(row.field)
-                const isBoolean = field?.type === 'boolean'
-                const isEmptyOp = row.operator === 'is_empty'
-                return (
-                  <div key={row.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.4)', minWidth: '40px', textAlign: 'right' }}>
-                      {index === 0 ? 'Where' : 'And'}
-                    </div>
-                    <select value={row.field} onChange={e => updateRow(row.id, 'field', e.target.value)} style={{ padding: '8px 10px', borderRadius: '5px', border: '0.5px solid rgba(255,255,255,0.2)', background: '#344467', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', outline: 'none', cursor: 'pointer' }}>
-                      {FILTER_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
-                    </select>
-                    <select value={row.operator} onChange={e => updateRow(row.id, 'operator', e.target.value)} style={{ padding: '8px 10px', borderRadius: '5px', border: '0.5px solid rgba(255,255,255,0.2)', background: '#344467', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', outline: 'none', cursor: 'pointer' }}>
-                      {operators.map(op => <option key={op.value} value={op.value}>{op.label}</option>)}
-                    </select>
-                    {!isBoolean && !isEmptyOp && (
-                      <input
-                        type="text"
-                        value={row.value}
-                        onChange={e => updateRow(row.id, 'value', e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') handleSearch() }}
-                        placeholder="Value..."
-                        style={{ flex: 1, padding: '8px 12px', borderRadius: '5px', border: '0.5px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', outline: 'none', minWidth: '120px' }}
-                      />
-                    )}
-                    <button onClick={() => removeRow(row.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '18px', padding: '4px 6px', lineHeight: 1, flexShrink: 0 }}>×</button>
-                  </div>
-                )
-              })}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '12px' }}>
-                <button onClick={addRow} style={{ background: 'none', border: 'none', color: '#a3925f', fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', cursor: 'pointer', padding: 0 }}>
-                  + Add filter
-                </button>
-                {advancedFilterCount > 0 && (
-                  <button onClick={clearAdvanced} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontFamily: 'Montserrat, sans-serif', fontSize: '12px', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>
-                    Clear filters
-                  </button>
-                )}
+      {/* ── Browse by country / theme ─────────────────────────────── */}
+      <div style={{ background: '#fff', padding: '40px 80px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+
+          {/* By country */}
+          <div style={{ border: '0.5px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
+            <button
+              onClick={() => setOpenCountrySection(v => !v)}
+              style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 24px', background: openCountrySection ? '#293451' : '#fafaf8', border: 'none', cursor: 'pointer' }}
+            >
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: openCountrySection ? '#fff' : '#293451' }}>Browse by country</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: openCountrySection ? 'rgba(255,255,255,0.5)' : '#aaa', marginTop: '2px' }}>Jump straight to a country's full catalogue</div>
               </div>
-
-              {/* Quick filter pills */}
-              <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '0.5px solid rgba(255,255,255,0.1)' }}>
-                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>Quick filters</div>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {[
-                    { label: 'Mint only', field: 'sg_number', operator: 'is_true', value: 'mint' },
-                    { label: 'Under £100', field: 'price_max', operator: 'lte', value: '100' },
-                    { label: '£100 – £500', field: 'price_min', operator: 'gte', value: '100' },
-                    { label: 'Over £500', field: 'price_min', operator: 'gte', value: '500' },
-                    { label: 'Pre-1900', field: 'year_issued', operator: 'lte', value: '1900' },
-                    { label: 'Error stamps', field: 'is_error', operator: 'is_true', value: '' },
-                    { label: 'Specimen / Proof', field: 'is_proof', operator: 'is_true', value: '' },
-                    { label: 'Booklet panes', field: 'is_booklet_pane', operator: 'is_true', value: '' },
-                    { label: 'Perforated 14', field: 'perforation_gauge', operator: 'is', value: '14' },
-                    { label: 'Crown watermark', field: 'watermark', operator: 'includes', value: 'Crown' },
-                  ].map(chip => {
-                    const active = filterRows.some(r => r.field === chip.field && r.operator === chip.operator && r.value === chip.value)
-                    return (
+              <span style={{ color: openCountrySection ? '#a3925f' : '#aaa', fontSize: '18px', transition: 'transform 0.2s', display: 'inline-block', transform: openCountrySection ? 'rotate(180deg)' : 'none', flexShrink: 0, marginLeft: '16px' }}>&#8964;</span>
+            </button>
+            {openCountrySection && (
+              <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {COUNTRY_GROUPS.map(({ group, countries: isos }) => {
+                  const isOpen = openCountryGroup === group
+                  const items = COUNTRIES.filter(c => isos.includes(c.iso))
+                  return (
+                    <div key={group} style={{ border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden' }}>
                       <button
-                        key={chip.label}
-                        onClick={() => {
-                          if (active) {
-                            setFilterRows(prev => prev.filter(r => !(r.field === chip.field && r.operator === chip.operator && r.value === chip.value)))
-                          } else {
-                            setFilterRows(prev => [...prev, { id: Math.random().toString(36).slice(2), field: chip.field, operator: chip.operator, value: chip.value }])
-                            if (!showFilters) setShowFilters(true)
-                          }
-                        }}
-                        style={{ padding: '5px 14px', borderRadius: '20px', border: active ? '1px solid #a3925f' : '0.5px solid rgba(255,255,255,0.2)', background: active ? 'rgba(163,146,95,0.2)' : 'transparent', color: active ? '#a3925f' : 'rgba(255,255,255,0.65)', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.15s' }}
+                        onClick={() => setOpenCountryGroup(isOpen ? null : group)}
+                        style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: isOpen ? '#eaecf2' : '#fafaf8', border: 'none', cursor: 'pointer' }}
                       >
-                        {chip.label}
+                        <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#293451' }}>{group}</span>
+                        <span style={{ color: '#aaa', fontSize: '12px', transform: isOpen ? 'rotate(180deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>&#8964;</span>
                       </button>
-                    )
-                  })}
+                      {isOpen && (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1px', background: '#eee' }}>
+                          {items.map(c => (
+                            <button key={c.iso} onClick={() => browseCountry(c.iso)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: '#fff', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
+                              <span style={{ fontSize: '16px', lineHeight: 1 }}>{c.flag}</span>
+                              <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333' }}>{c.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* By theme */}
+          <div style={{ border: '0.5px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
+            <button
+              onClick={() => setOpenThemeSection(v => !v)}
+              style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 24px', background: openThemeSection ? '#293451' : '#fafaf8', border: 'none', cursor: 'pointer' }}
+            >
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: openThemeSection ? '#fff' : '#293451' }}>Browse by theme</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: openThemeSection ? 'rgba(255,255,255,0.5)' : '#aaa', marginTop: '2px' }}>Find stamps by subject matter</div>
+              </div>
+              <span style={{ color: openThemeSection ? '#a3925f' : '#aaa', fontSize: '18px', transition: 'transform 0.2s', display: 'inline-block', transform: openThemeSection ? 'rotate(180deg)' : 'none', flexShrink: 0, marginLeft: '16px' }}>&#8964;</span>
+            </button>
+            {openThemeSection && (
+              <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {THEME_GROUPS.map(({ group, themes: themeLabels }) => {
+                  const isOpen = openThemeGroup === group
+                  const items = THEMES.filter(t => themeLabels.includes(t.label))
+                  return (
+                    <div key={group} style={{ border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden' }}>
+                      <button
+                        onClick={() => setOpenThemeGroup(isOpen ? null : group)}
+                        style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: isOpen ? '#eaecf2' : '#fafaf8', border: 'none', cursor: 'pointer' }}
+                      >
+                        <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#293451' }}>{group}</span>
+                        <span style={{ color: '#aaa', fontSize: '12px', transform: isOpen ? 'rotate(180deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>&#8964;</span>
+                      </button>
+                      {isOpen && (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1px', background: '#eee' }}>
+                          {items.map(t => (
+                            <button key={t.label} onClick={() => browseTheme(t.label)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: '#fff', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
+                              <span style={{ fontSize: '15px', lineHeight: 1 }}>{t.icon}</span>
+                              <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333' }}>{t.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Account sections ─────────────────────────────────────────── */}
+      <div style={{ background: '#f5f5f3', padding: '48px 80px' }}>
+        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '24px' }}>Your account</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+          {ACCOUNT_SECTIONS.map(section => (
+            <a key={section.id} href={section.href} style={{ background: section.bg, borderRadius: '10px', overflow: 'hidden', textDecoration: 'none', display: 'flex', flexDirection: 'column', border: section.bg === '#fff' || section.bg === '#f5f5f3' ? '0.5px solid #ddd' : 'none' }}>
+              <div style={{ height: '140px', overflow: 'hidden', position: 'relative' }}>
+                <img src={section.img} alt={section.label} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.35 }} />
+                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, transparent 0%, ${section.bg} 100%)` }} />
+                <div style={{ position: 'absolute', bottom: '12px', left: '20px' }}>
+                  <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: section.accentColor, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '3px' }}>{section.label}</div>
+                  {section.stat && <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '22px', fontWeight: '600', color: section.textColor }}>{section.stat}</div>}
                 </div>
               </div>
-            </div>
-          )}
+              <div style={{ padding: '16px 20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: section.bg === '#fff' || section.bg === '#f5f5f3' ? '#666' : 'rgba(255,255,255,0.65)', lineHeight: '1.6', marginBottom: '16px', flex: 1 }}>{section.desc}</div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: section.bg === '#fff' || section.bg === '#f5f5f3' ? '#293451' : section.accentColor, letterSpacing: '0.04em' }}>{section.cta}</div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
 
-      {/* ── Browse by country / theme ───────────────────────────────── */}
+      {/* ── Recent realisations ──────────────────────────────────────── */}
       <div style={{ background: '#fff', padding: '48px 80px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-
-          {/* By country — grouped accordions */}
-          <div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Browse by country</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '20px' }}>Jump straight to a country's full catalogue</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {[
-                { group: 'Great Britain', countries: ['GB'] },
-                { group: 'Commonwealth', countries: ['AU', 'CA', 'NZ', 'BM', 'JM', 'HK', 'FK'] },
-                { group: 'Africa', countries: ['ZA', 'NG', 'EG'] },
-                { group: 'Asia & Middle East', countries: ['IN', 'IL'] },
-                { group: 'Europe', countries: ['FR', 'DE'] },
-                { group: 'Americas', countries: ['US', 'CA'] },
-              ].map(({ group, countries: isos }) => {
-                const isOpen = openCountryGroup === group
-                const items = COUNTRIES.filter(c => isos.includes(c.iso))
-                return (
-                  <div key={group} style={{ border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden' }}>
-                    <button
-                      onClick={() => setOpenCountryGroup(isOpen ? null : group)}
-                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 16px', background: isOpen ? '#293451' : '#fafaf8', border: 'none', cursor: 'pointer' }}
-                    >
-                      <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: isOpen ? '#fff' : '#293451' }}>{group}</span>
-                      <span style={{ color: isOpen ? '#a3925f' : '#aaa', fontSize: '13px', transition: 'transform 0.2s', display: 'inline-block', transform: isOpen ? 'rotate(180deg)' : 'none' }}>&#8964;</span>
-                    </button>
-                    {isOpen && (
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1px', background: '#eee' }}>
-                        {items.map(c => (
-                          <button
-                            key={c.iso}
-                            onClick={() => browseCountry(c.iso)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: '#fff', border: 'none', cursor: 'pointer', textAlign: 'left' }}
-                          >
-                            <span style={{ fontSize: '18px', lineHeight: 1 }}>{c.flag}</span>
-                            <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333' }}>{c.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* By theme — grouped accordions */}
-          <div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Browse by theme</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '20px' }}>Find stamps by subject matter</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {[
-                { group: 'Nature', themes: ['Animals', 'Birds', 'Flowers', 'Nature'] },
-                { group: 'Transport', themes: ['Ships', 'Vehicles', 'Aircraft'] },
-                { group: 'History & Culture', themes: ['Royalty', 'Military', 'Religion', 'People', 'Art'] },
-                { group: 'Geography', themes: ['Maps', 'Architecture'] },
-                { group: 'Sport & Science', themes: ['Sports', 'Space'] },
-              ].map(({ group, themes: themeLabels }) => {
-                const isOpen = openThemeGroup === group
-                const items = THEMES.filter(t => themeLabels.includes(t.label))
-                return (
-                  <div key={group} style={{ border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden' }}>
-                    <button
-                      onClick={() => setOpenThemeGroup(isOpen ? null : group)}
-                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 16px', background: isOpen ? '#293451' : '#fafaf8', border: 'none', cursor: 'pointer' }}
-                    >
-                      <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: isOpen ? '#fff' : '#293451' }}>{group}</span>
-                      <span style={{ color: isOpen ? '#a3925f' : '#aaa', fontSize: '13px', transition: 'transform 0.2s', display: 'inline-block', transform: isOpen ? 'rotate(180deg)' : 'none' }}>&#8964;</span>
-                    </button>
-                    {isOpen && (
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1px', background: '#eee' }}>
-                        {items.map(t => (
-                          <button
-                            key={t.label}
-                            onClick={() => browseTheme(t.label)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: '#fff', border: 'none', cursor: 'pointer', textAlign: 'left' }}
-                          >
-                            <span style={{ fontSize: '16px', lineHeight: 1 }}>{t.icon}</span>
-                            <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333' }}>{t.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Recommended ─────────────────────────────────────────────── */}
-      <div style={{ background: '#f5f5f3', padding: '48px 80px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
-          <div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '4px' }}>Recommended for you</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888' }}>Based on your wishlist, collection and browsing history</div>
-          </div>
-          <a href="/catalogue" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>Browse all →</a>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
-          {RECOMMENDED.map(item => {
-            const imgUrl = `https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/${item.imgFile}`
-            return (
-              <a key={item.sgNum} href={'/catalogue?q=' + encodeURIComponent(item.sgNum)} style={{ background: '#fff', border: '0.5px solid #ddd', borderRadius: '8px', overflow: 'hidden', textDecoration: 'none', display: 'block', transition: 'box-shadow 0.2s' }}>
-                {/* Image panel */}
-                <div style={{ height: '160px', background: '#f8f8f6', overflow: 'hidden', position: 'relative' }}>
-                  {item.imgFile ? (
-                    <img src={imgUrl} alt={item.desc} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} />
-                  ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ddd', fontFamily: 'Open Sans, sans-serif', fontSize: '12px' }}>No image</div>
-                  )}
-                  <span style={{ position: 'absolute', top: '8px', left: '8px', fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', padding: '2px 8px', borderRadius: '20px', background: '#293451', color: '#a3925f', whiteSpace: 'nowrap' }}>{item.reason}</span>
-                </div>
-                {/* Details */}
-                <div style={{ padding: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                    <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '700', color: '#293451' }}>{item.sgNum}</div>
-                    <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '700', color: '#1a5c1a' }}>{item.catValue}</div>
-                  </div>
-                  <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333', marginBottom: '4px', lineHeight: '1.4' }}>{item.desc}</div>
-                  <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', marginBottom: '12px' }}>{item.country}</div>
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', padding: '3px 9px', borderRadius: '20px', background: item.condition === 'Mint' || item.condition === 'Unmounted mint' ? '#e8f4e8' : '#fdf0e0', color: item.condition === 'Mint' || item.condition === 'Unmounted mint' ? '#1a5c1a' : '#7a3d00' }}>{item.condition}</span>
-                  </div>
-                </div>
-              </a>
-            )
-          })}
-        </div>
-      </div>
-
-
-      {/* ── New In ──────────────────────────────────────────────────── */}
-      <div style={{ background: '#fff', padding: '48px 80px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
-          <div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '4px' }}>New in</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888' }}>Recently added to the catalogue — including stamps on your wishlist</div>
-          </div>
-          <a href="/catalogue" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>See all new additions →</a>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-          {newIn.length === 0 ? (
-            <div style={{ gridColumn: '1/-1', padding: '40px', textAlign: 'center', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa' }}>Loading new additions...</div>
-          ) : newIn.map(sv => {
-            const stamp = sv.stamps
-            const series = stamp?.stamp_series
-            const imgUrl = `https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/auction-images/` + sv.id + `-1.jpg`
-            const sgNum = sv.sg_sub_number || stamp?.sg_number || '—'
-            const desc = sv.colour_shade || stamp?.colour_primary || '—'
-            const denom = stamp?.denomination || ''
-            const countryIso = stamp?.country_iso
-            const CMAP = { FK: 'Falkland Islands', GB: 'Great Britain', AU: 'Australia', CA: 'Canada', NZ: 'New Zealand', BM: 'Bermuda', US: 'United States' }
-            const country = CMAP[countryIso] || countryIso || '—'
-            const seriesName = series?.name ? series.name.replace(/\d{4}\([^)]+\)\.\s*/, '').split('.')[0].trim() : ''
-            const year = series?.year_start && series.year_start !== 9999 ? series.year_start : stamp?.year_issued
-            return (
-              <a key={sv.id} href={'/catalogue?q=' + encodeURIComponent('SG ' + sgNum)} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '8px', overflow: 'hidden', textDecoration: 'none', display: 'grid', gridTemplateColumns: '100px 1fr' }}>
-                <div style={{ background: '#f0f0ee', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px' }}>
-                  <NewInImage url={imgUrl} fallback={`https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/retail-images/` + sv.id + `-1.jpg`} />
-                </div>
-                <div style={{ padding: '14px 16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
-                    <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '700', color: '#293451' }}>SG {sgNum}</div>
-                    <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', padding: '1px 6px', borderRadius: '3px', background: '#eaecf2', color: '#293451' }}>New</span>
-                  </div>
-                  <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#444', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{denom} {desc}</div>
-                  <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '11px', color: '#aaa', marginBottom: '6px' }}>{country}{year ? ' · ' + year : ''}</div>
-                  <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#1a5c1a' }}>
-                    {sv.sg_cat_value_mint ? '£' + parseFloat(sv.sg_cat_value_mint).toLocaleString('en-GB') : '—'}
-                  </div>
-                </div>
-              </a>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* ── Feature shortcuts ────────────────────────────────────────── */}
-      <div style={{ background: '#fff', padding: '48px 80px' }}>
-        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '24px' }}>Your account</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-
-          {/* My Collection */}
-          <a href="/account" style={{ background: '#293451', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>My Collection</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', marginBottom: '4px' }}>{collectionCount}</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>items in your collection</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>View collection →</div>
-          </a>
-
-          {/* Wishlist */}
-          <a href="/account" style={{ background: '#7a1a2e', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Wishlist</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', marginBottom: '4px' }}>{wishlistCount}</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>stamps on your wishlist</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>View wishlist →</div>
-          </a>
-
-          {/* Budget */}
-          <a href="/account" style={{ background: '#fff', border: '0.5px solid #ddd', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Budget tracker</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '600', color: '#293451', marginBottom: '4px' }}>£{budgetRemaining.toFixed(2)}</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '12px' }}>remaining this period</div>
-            <div style={{ height: '4px', background: '#eee', borderRadius: '2px', overflow: 'hidden', marginBottom: '12px' }}>
-              <div style={{ height: '100%', width: budgetPct + '%', background: budgetPct > 75 ? '#c0392b' : budgetPct > 50 ? '#a3925f' : '#293451', borderRadius: '2px' }} />
-            </div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#888', letterSpacing: '0.04em' }}>View budget →</div>
-          </a>
-
-        </div>
-
-        {/* Second row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-
-          {/* SGB 100 */}
-          <a href="/sgb100" style={{ background: '#0a0e1a', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>SGB 100</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#fff', marginBottom: '6px' }}>Performance index</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '16px' }}>The 100 best-performing stamps by catalogue value appreciation since 2005</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em' }}>View index →</div>
-          </a>
-
-          {/* Looking to sell */}
-          <a href="/account" style={{ background: '#f5f5f3', border: '0.5px solid #ddd', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Looking to sell</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Flagged items</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '16px' }}>Stamps you've marked as available to sell — track value and request a valuation</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.04em' }}>View flagged →</div>
-          </a>
-
-          {/* Community */}
-          <a href="/community" style={{ background: '#f5f5f3', border: '0.5px solid #ddd', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Community</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Discussions</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '16px' }}>Share finds, ask questions and connect with collectors</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.04em' }}>Go to community →</div>
-          </a>
-
-        </div>
-      </div>
-
-
-      {/* ── Recent realisations ─────────────────────────────────────── */}
-      <div style={{ background: '#f5f5f3', padding: '48px 80px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
           <div>
             <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '4px' }}>Recent realisations</div>
@@ -603,7 +353,7 @@ export default function Home() {
           </div>
           <a href="https://sgbaldwins.com/auctions/upcoming-auctions" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', padding: '8px 16px', border: '0.5px solid #293451', borderRadius: '5px', letterSpacing: '0.04em' }}>Upcoming auctions →</a>
         </div>
-        <div style={{ background: '#fff', border: '0.5px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
+        <div style={{ border: '0.5px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1.5px solid #293451', background: '#fafaf8' }}>
@@ -614,9 +364,7 @@ export default function Home() {
             </thead>
             <tbody>
               {realisations.length === 0 ? (
-                <tr>
-                  <td colSpan={8} style={{ padding: '32px', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa', textAlign: 'center' }}>Loading recent realisations...</td>
-                </tr>
+                <tr><td colSpan={8} style={{ padding: '32px', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa', textAlign: 'center' }}>Loading recent realisations...</td></tr>
               ) : realisations.map(sale => {
                 const variation = sale.stamp_variations
                 const stamp = variation?.stamps
@@ -628,13 +376,11 @@ export default function Home() {
                     <td style={{ padding: '11px 14px', fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#293451' }}>{sgNum}</td>
                     <td style={{ padding: '11px 14px', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#444', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{desc}</td>
                     <td style={{ padding: '11px 14px' }}>
-                      <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '20px', background: sale.sale_condition?.toLowerCase().includes('mint') ? '#e8f4e8' : '#fdf0e0', color: sale.sale_condition?.toLowerCase().includes('mint') ? '#1a5c1a' : '#7a3d00', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '20px', background: sale.sale_condition?.toLowerCase().includes('mint') ? '#e8f4e8' : '#fdf0e0', color: sale.sale_condition?.toLowerCase().includes('mint') ? '#1a5c1a' : '#7a3d00' }}>
                         {sale.sale_condition || '—'}
                       </span>
                     </td>
-                    <td style={{ padding: '11px 14px', fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: '#293451', whiteSpace: 'nowrap' }}>
-                      {'£' + parseFloat(sale.sale_price).toLocaleString('en-GB')}
-                    </td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: '#293451', whiteSpace: 'nowrap' }}>{'£' + parseFloat(sale.sale_price).toLocaleString('en-GB')}</td>
                     <td style={{ padding: '11px 14px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888' }}>{sale.sale_number}</td>
                     <td style={{ padding: '11px 14px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', whiteSpace: 'nowrap' }}>{formatDate(sale.sale_date)}</td>
                     <td style={{ padding: '11px 14px', textAlign: 'right' }}>
@@ -648,7 +394,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── Recent auctions strip ────────────────────────────────────── */}
+      {/* ── Upcoming auctions strip ───────────────────────────────────── */}
       <div style={{ background: '#293451', padding: '32px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: '#fff' }}>Upcoming Stanley Gibbons auctions</div>
         <a href="https://sgbaldwins.com/auctions/upcoming-auctions" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#a3925f', textDecoration: 'none', padding: '9px 20px', border: '1px solid #a3925f', borderRadius: '5px', letterSpacing: '0.04em' }}>

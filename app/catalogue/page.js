@@ -6,6 +6,7 @@ import { searchCatalogue } from '../../lib/catalogue'
 import SetCard from '../../components/SetCard'
 import { CatalogueStatusProvider } from '../../components/StampRow'
 import GlobeComponent from '../../components/GlobeComponent'
+import { supabase } from '../../lib/supabase'
 
 const FILTER_FIELDS = [
   { value: 'sg_number', label: 'SG number', type: 'stamp' },
@@ -20,6 +21,25 @@ const FILTER_FIELDS = [
   { value: 'is_booklet_pane', label: 'Booklet pane', type: 'boolean' },
   { value: 'price_min', label: 'Min value (£)', type: 'price' },
   { value: 'price_max', label: 'Max value (£)', type: 'price' },
+]
+
+const COUNTRIES = [
+  { label: 'Great Britain', iso: 'GB', flag: '🇬🇧' },
+  { label: 'Falkland Islands', iso: 'FK', flag: '🇫🇰' },
+  { label: 'Australia', iso: 'AU', flag: '🇦🇺' },
+  { label: 'Canada', iso: 'CA', flag: '🇨🇦' },
+  { label: 'India', iso: 'IN', flag: '🇮🇳' },
+  { label: 'South Africa', iso: 'ZA', flag: '🇿🇦' },
+  { label: 'Nigeria', iso: 'NG', flag: '🇳🇬' },
+  { label: 'Egypt', iso: 'EG', flag: '🇪🇬' },
+  { label: 'Israel', iso: 'IL', flag: '🇮🇱' },
+  { label: 'France', iso: 'FR', flag: '🇫🇷' },
+  { label: 'Germany', iso: 'DE', flag: '🇩🇪' },
+  { label: 'United States', iso: 'US', flag: '🇺🇸' },
+  { label: 'New Zealand', iso: 'NZ', flag: '🇳🇿' },
+  { label: 'Bermuda', iso: 'BM', flag: '🇧🇲' },
+  { label: 'Hong Kong', iso: 'HK', flag: '🇭🇰' },
+  { label: 'Jamaica', iso: 'JM', flag: '🇯🇲' },
 ]
 
 const TEXT_OPERATORS = [
@@ -40,6 +60,8 @@ const BOOLEAN_OPERATORS = [
   { value: 'is_true', label: 'is true' },
   { value: 'is_false', label: 'is false' },
 ]
+
+const SUPABASE_URL = 'https://ambzwvkbxpkjuwmjnvgj.supabase.co'
 
 function getOperators(field) {
   const f = FILTER_FIELDS.find(x => x.value === field)
@@ -63,15 +85,35 @@ function normaliseDenomination(str) {
     .replace(/2\/3/g, '\u2154')
 }
 
+function NewInImage({ url }) {
+  const [error, setError] = useState(false)
+  if (error) return <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: '28px' }}>📮</div>
+  return <img src={url} alt="Stamp" onError={() => setError(true)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }} />
+}
+
 function CatalogueInner() {
   const searchParams = useSearchParams()
   const [query, setQuery] = useState('')
-  const [country, setCountry] = useState('FK')
+  const [country, setCountry] = useState('')
   const [results, setResults] = useState([])
+  const [newIn, setNewIn] = useState([])
   const [searched, setSearched] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [filterRows, setFilterRows] = useState([newRow()])
+
+  useEffect(() => {
+    async function fetchNewIn() {
+      const { data } = await supabase
+        .from('stamp_variations')
+        .select('id, sg_sub_number, sg_cat_value_mint, colour_shade, stamps ( sg_number, denomination, colour_primary, year_issued, country_iso, stamp_series ( name ) )')
+        .not('sg_cat_value_mint', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(8)
+      if (data) setNewIn(data.filter(sv => sv.stamps))
+    }
+    fetchNewIn()
+  }, [])
 
   const runSearch = useCallback(async function(q, c, filters) {
     setLoading(true)
@@ -84,9 +126,13 @@ function CatalogueInner() {
 
   useEffect(() => {
     const q = searchParams.get('q')
-    if (q) {
+    const c = searchParams.get('country')
+    if (c) {
+      setCountry(c)
+      runSearch(q || '', c, {})
+    } else if (q) {
       setQuery(q)
-      runSearch(q, 'FK', {})
+      runSearch(q, '', {})
     }
   }, [searchParams, runSearch])
 
@@ -193,6 +239,8 @@ function CatalogueInner() {
     minWidth: '120px',
   }
 
+  const selectedCountry = COUNTRIES.find(c => c.iso === country)
+
   return (
     <div style={{ padding: '24px 48px' }}>
       <div style={{ background: '#293451', borderRadius: '10px', padding: '20px 24px', marginBottom: '12px' }}>
@@ -208,11 +256,12 @@ function CatalogueInner() {
           <select
             value={country}
             onChange={e => setCountry(e.target.value)}
-            style={{ padding: '11px 14px', borderRadius: '6px', border: 'none', background: '#344467', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', outline: 'none' }}
+            style={{ padding: '11px 14px', borderRadius: '6px', border: 'none', background: '#344467', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', outline: 'none', minWidth: '200px' }}
           >
-            <option value="BM">Bermuda</option>
-            <option value="FK">Falkland Islands</option>
-            <option value="GB">Great Britain</option>
+            <option value="">Select country</option>
+            {COUNTRIES.map(c => (
+              <option key={c.iso} value={c.iso}>{c.flag} {c.label}</option>
+            ))}
           </select>
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -222,7 +271,7 @@ function CatalogueInner() {
           </button>
           <button
             onClick={handleSearch}
-            style={{ padding: '11px 24px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#293451', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            style={{ padding: '11px 24px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', cursor: 'pointer', whiteSpace: 'nowrap' }}
           >
             Search
           </button>
@@ -260,7 +309,7 @@ function CatalogueInner() {
                     />
                   )}
                   <button onClick={() => removeRow(row.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '18px', padding: '4px 6px', lineHeight: 1, flexShrink: 0 }}>
-                    x
+                    ×
                   </button>
                 </div>
               )
@@ -280,9 +329,86 @@ function CatalogueInner() {
       </div>
 
       {!searched && (
-        <div style={{ background: '#fff', borderRadius: '10px', border: '0.5px solid #ddd', overflow: 'hidden' }}>
-          <GlobeComponent onCountrySelect={handleGlobeSelect} />
-        </div>
+        <>
+          {/* Recommended for you */}
+          <div style={{ background: '#fff', borderRadius: '10px', border: '0.5px solid #ddd', padding: '28px', marginBottom: '12px' }}>
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#293451', marginBottom: '3px' }}>Recommended for you</div>
+              <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#aaa' }}>Based on your wishlist, collection and browsing history</div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px' }}>
+              {[
+                { sgNum: 'SG 1', desc: '1840 1d. black', country: 'Great Britain', condition: 'Fine used', catValue: '£2,500', reason: 'On your wishlist' },
+                { sgNum: 'SG 128', desc: '1933 1d. black & scarlet', country: 'Falkland Islands', condition: 'Unmounted mint', catValue: '£850', reason: 'Similar to collection' },
+                { sgNum: 'SG 450', desc: '1948 Silver Wedding 10s.', country: 'Great Britain', condition: 'Mint', catValue: '£320', reason: 'Popular this week' },
+                { sgNum: 'SG 2', desc: '1840 2d. blue', country: 'Great Britain', condition: 'Used', catValue: '£1,200', reason: 'Completes your set' },
+              ].map(item => (
+                <a key={item.sgNum} href={'/catalogue?q=' + encodeURIComponent(item.sgNum)} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', padding: '16px', textDecoration: 'none', display: 'block' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                    <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '700', color: '#293451' }}>{item.sgNum}</div>
+                    <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', padding: '2px 8px', borderRadius: '20px', background: '#f0f2f6', color: '#666', whiteSpace: 'nowrap' }}>{item.reason}</span>
+                  </div>
+                  <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333', marginBottom: '3px', lineHeight: '1.4' }}>{item.desc}</div>
+                  <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '11px', color: '#aaa', marginBottom: '10px' }}>{item.country} · {item.condition}</div>
+                  <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#1a5c1a' }}>{item.catValue}</div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* New in stock */}
+          <div style={{ background: '#fff', borderRadius: '10px', border: '0.5px solid #ddd', padding: '28px', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '20px' }}>
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#293451', marginBottom: '3px' }}>New in stock</div>
+                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#aaa' }}>Stamps that have just arrived in the Stanley Gibbons shop — click to view and buy</div>
+              </div>
+              <a href="https://www.stanleygibbons.com/shop" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>Visit the shop →</a>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px' }}>
+              {newIn.length === 0 ? (
+                <div style={{ gridColumn: '1/-1', padding: '32px', textAlign: 'center', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#aaa' }}>Loading new stock...</div>
+              ) : newIn.map(sv => {
+                const stamp = sv.stamps
+                const sgNum = sv.sg_sub_number || stamp?.sg_number || '—'
+                const desc = sv.colour_shade || stamp?.colour_primary || '—'
+                const denom = stamp?.denomination || ''
+                const CMAP = { FK: 'Falkland Islands', GB: 'Great Britain', AU: 'Australia', CA: 'Canada', NZ: 'New Zealand', BM: 'Bermuda' }
+                const country = CMAP[stamp?.country_iso] || stamp?.country_iso || '—'
+                const imgUrl = SUPABASE_URL + '/storage/v1/object/public/auction-images/' + sv.id + '-1.jpg'
+                return (
+                  <a key={sv.id} href={'/catalogue?q=' + encodeURIComponent('SG ' + sgNum)} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden', textDecoration: 'none', display: 'block' }}>
+                    <div style={{ height: '120px', background: '#f0f0ee', position: 'relative' }}>
+                      <NewInImage url={imgUrl} />
+                      <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: 'Montserrat, sans-serif', fontSize: '9px', fontWeight: '600', padding: '2px 7px', borderRadius: '3px', background: '#293451', color: '#a3925f', letterSpacing: '0.04em' }}>NEW</span>
+                    </div>
+                    <div style={{ padding: '12px 14px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3px' }}>
+                        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '700', color: '#293451' }}>SG {sgNum}</div>
+                        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#1a5c1a' }}>
+                          {sv.sg_cat_value_mint ? '£' + parseFloat(sv.sg_cat_value_mint).toLocaleString('en-GB') : '—'}
+                        </div>
+                      </div>
+                      <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#444', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: '2px' }}>{denom} {desc}</div>
+                      <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '11px', color: '#aaa' }}>{country}</div>
+                    </div>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Globe */}
+          <div style={{ borderRadius: '10px', overflow: 'hidden', background: 'radial-gradient(ellipse at 60% 40%, #1a2744 0%, #0c1628 50%, #050a14 100%)', height: '380px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ textAlign: 'center', padding: '20px 24px 0', flexShrink: 0 }}>
+              <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#a3925f', marginBottom: '6px' }}>Explore the catalogue</div>
+              <p style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.5)', margin: '0 auto', maxWidth: '500px', lineHeight: '1.8' }}>Drag the globe and click a pin to browse stamps by territory.</p>
+            </div>
+            <div style={{ flex: 1, minHeight: 0 }}>
+              <GlobeComponent onCountrySelect={handleGlobeSelect} />
+            </div>
+          </div>
+        </>
       )}
 
       {loading && (
