@@ -4,21 +4,74 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 
-const SUPABASE_URL = 'https://ambzwvkbxpkjuwmjnvgj.supabase.co'
-const IMG = (name) => `${SUPABASE_URL}/storage/v1/object/public/homepage-images/${name}`
-const SGB_BASE = 'https://sgbaldwins.com/auctions/'
+const FILTER_FIELDS = [
+  { value: 'sg_number', label: 'SG number' },
+  { value: 'denomination', label: 'Denomination' },
+  { value: 'colour_primary', label: 'Colour' },
+  { value: 'year_issued', label: 'Year issued' },
+  { value: 'watermark', label: 'Watermark' },
+  { value: 'printer', label: 'Printer' },
+  { value: 'perforation_gauge', label: 'Perforation' },
+  { value: 'price_min', label: 'Min value (£)' },
+  { value: 'price_max', label: 'Max value (£)' },
+]
 
-function lotUrl(sale) {
-  if (!sale) return SGB_BASE + 'upcoming-auctions'
-  if (sale.auction_slug && sale.lot_number) {
-    return SGB_BASE + sale.auction_slug + '/lot/' + sale.lot_number
-  }
-  return SGB_BASE + 'upcoming-auctions'
-}
+const COUNTRIES = [
+  { label: 'Great Britain', iso: 'GB', flag: '🇬🇧' },
+  { label: 'Falkland Islands', iso: 'FK', flag: '🇫🇰' },
+  { label: 'Australia', iso: 'AU', flag: '🇦🇺' },
+  { label: 'Canada', iso: 'CA', flag: '🇨🇦' },
+  { label: 'India', iso: 'IN', flag: '🇮🇳' },
+  { label: 'South Africa', iso: 'ZA', flag: '🇿🇦' },
+  { label: 'Nigeria', iso: 'NG', flag: '🇳🇬' },
+  { label: 'Egypt', iso: 'EG', flag: '🇪🇬' },
+  { label: 'Israel', iso: 'IL', flag: '🇮🇱' },
+  { label: 'France', iso: 'FR', flag: '🇫🇷' },
+  { label: 'Germany', iso: 'DE', flag: '🇩🇪' },
+  { label: 'United States', iso: 'US', flag: '🇺🇸' },
+  { label: 'New Zealand', iso: 'NZ', flag: '🇳🇿' },
+  { label: 'Bermuda', iso: 'BM', flag: '🇧🇲' },
+  { label: 'Hong Kong', iso: 'HK', flag: '🇭🇰' },
+  { label: 'Jamaica', iso: 'JM', flag: '🇯🇲' },
+]
+
+const THEMES = [
+  { label: 'Animals', icon: '🦁' },
+  { label: 'Birds', icon: '🦅' },
+  { label: 'Flowers', icon: '🌸' },
+  { label: 'Ships', icon: '⛵' },
+  { label: 'Vehicles', icon: '🚂' },
+  { label: 'Aircraft', icon: '✈️' },
+  { label: 'Royalty', icon: '👑' },
+  { label: 'Maps', icon: '🗺️' },
+  { label: 'Sports', icon: '🏅' },
+  { label: 'Space', icon: '🚀' },
+  { label: 'Art', icon: '🎨' },
+  { label: 'Architecture', icon: '🏛️' },
+  { label: 'Military', icon: '🎖️' },
+  { label: 'Nature', icon: '🌿' },
+  { label: 'People', icon: '👤' },
+  { label: 'Religion', icon: '⛪' },
+]
+
+const RECOMMENDED = [
+  { sgNum: 'SG 1', desc: '1840 1d. black', country: 'Great Britain', condition: 'Fine used', catValue: '£2,500', reason: 'On your wishlist' },
+  { sgNum: 'SG 128', desc: '1933 1d. black & scarlet', country: 'Falkland Islands', condition: 'Unmounted mint', catValue: '£850', reason: 'Similar to your collection' },
+  { sgNum: 'SG 450', desc: '1948 Silver Wedding 10s.', country: 'Great Britain', condition: 'Mint', catValue: '£320', reason: 'Popular in your area' },
+  { sgNum: 'SG 2', desc: '1840 2d. blue', country: 'Great Britain', condition: 'Used', catValue: '£1,200', reason: 'Completes your set' },
+]
 
 export default function Home() {
   const [query, setQuery] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+  const [activeFilters, setActiveFilters] = useState([])
+  const [filterField, setFilterField] = useState('sg_number')
+  const [filterValue, setFilterValue] = useState('')
   const [realisations, setRealisations] = useState([])
+  const [collectionCount, setCollectionCount] = useState(41)
+  const [wishlistCount, setWishlistCount] = useState(12)
+  const [budgetRemaining, setBudgetRemaining] = useState(142.50)
+  const [budgetTotal, setBudgetTotal] = useState(200)
   const router = useRouter()
 
   useEffect(() => {
@@ -26,275 +79,389 @@ export default function Home() {
       const { data } = await supabase
         .from('sales_records')
         .select(`
-          id,
-          lot_number,
-          sale_number,
-          sale_price,
-          sale_condition,
-          sale_date,
-          country_iso,
-          auction_slug,
-          stamp_variations (
-            sg_sub_number,
-            colour_shade,
-            stamps (
-              sg_number,
-              denomination,
-              colour_primary,
-              stamp_series (name)
-            )
-          )
+          id, lot_number, sale_number, sale_price, sale_condition, sale_date, country_iso, auction_slug,
+          stamp_variations ( sg_sub_number, colour_shade, stamps ( sg_number, denomination, colour_primary ) )
         `)
         .not('variation_id', 'is', null)
         .order('sale_date', { ascending: false })
-        .limit(10)
+        .limit(8)
       if (data) setRealisations(data)
     }
     fetchRealisations()
   }, [])
 
+  function formatDate(dateStr) {
+    if (!dateStr) return '—'
+    return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  }
+
+  function countryName(iso) {
+    const map = { FK: 'Falkland Islands', GB: 'Great Britain', US: 'United States', AU: 'Australia', CA: 'Canada', NZ: 'New Zealand', BM: 'Bermuda' }
+    return map[iso] || iso || '—'
+  }
+
+  function lotUrl(sale) {
+    const SGB_BASE = 'https://sgbaldwins.com/auctions/'
+    if (sale.auction_slug && sale.lot_number) return SGB_BASE + sale.auction_slug + '/lot/' + sale.lot_number
+    return SGB_BASE + 'upcoming-auctions'
+  }
+
   function handleSearch() {
-    if (query.trim()) {
-      router.push('/catalogue?q=' + encodeURIComponent(query))
-    } else {
-      router.push('/catalogue')
-    }
+    const params = new URLSearchParams()
+    if (query.trim()) params.set('q', query.trim())
+    activeFilters.forEach((f, i) => {
+      params.set('filter_field_' + i, f.field)
+      params.set('filter_value_' + i, f.value)
+    })
+    router.push('/catalogue?' + params.toString())
   }
 
   function handleKeyDown(e) {
     if (e.key === 'Enter') handleSearch()
   }
 
-  function formatDate(dateStr) {
-    if (!dateStr) return '—'
-    const d = new Date(dateStr)
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  function addFilter() {
+    if (!filterValue.trim()) return
+    setActiveFilters(prev => [...prev, { field: filterField, value: filterValue.trim() }])
+    setFilterValue('')
   }
 
-  function countryName(iso) {
-    const map = { FK: 'Falkland Islands', GB: 'Great Britain', US: 'United States', AU: 'Australia', CA: 'Canada', NZ: 'New Zealand' }
-    return map[iso] || iso || '—'
+  function removeFilter(i) {
+    setActiveFilters(prev => prev.filter((_, idx) => idx !== i))
   }
 
-  const features = [
-    { title: 'Complete catalogue', desc: 'Every stamp ever issued, from every country, catalogued to SG standard with full variation detail.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
-    { title: 'Historic price charts', desc: 'Track how catalogue values have moved over decades, from 2005 to today, for every stamp and variation.', icon: 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z' },
-    { title: 'Auction realisations', desc: 'Real hammer prices from Stanley Gibbons auctions, linked back to the original lot for full provenance.', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { title: 'Advanced filters', desc: 'Filter by watermark, printer, perforation, colour, year, condition and price simultaneously.', icon: 'M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z' },
-    { title: '170 years of authority', desc: 'Stanley Gibbons has catalogued stamps since 1856. This is that knowledge, made digital and searchable.', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
-    { title: 'Reference images', desc: 'High-resolution reference images from retail and auction, matched to the exact SG variation.', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
-  ]
+  function browseCountry(iso) {
+    router.push('/catalogue?country=' + iso)
+  }
+
+  function browseTheme(theme) {
+    router.push('/catalogue?q=' + encodeURIComponent(theme))
+  }
+
+  const budgetPct = Math.min(100, ((budgetTotal - budgetRemaining) / budgetTotal) * 100)
+
+  const inputStyle = {
+    fontFamily: 'Open Sans, sans-serif',
+    fontSize: '13px',
+    outline: 'none',
+    border: '0.5px solid #ddd',
+    borderRadius: '6px',
+    padding: '9px 12px',
+    color: '#222',
+    background: '#fff',
+  }
 
   return (
-    <div style={{ background: '#f5f5f3' }}>
+    <div style={{ background: '#f5f5f3', minHeight: '100vh' }}>
 
-      <div style={{ position: 'relative', width: '100%', height: '580px', overflow: 'hidden' }}>
-        <img src={IMG('GB0048.jpg')} alt="Penny Black with Stanley Gibbons catalogue" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(41,52,81,0.92) 0%, rgba(41,52,81,0.75) 50%, rgba(41,52,81,0.2) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 80px' }}>
-          <div style={{ maxWidth: '580px' }}>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
-              The world authority on stamps
-            </div>
-            <h1 style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '52px', fontWeight: '600', color: '#fff', lineHeight: '1.1', margin: '0 0 20px' }}>
-              Every stamp.<br />
-              <span style={{ color: '#a3925f' }}>Every detail.</span><br />
-              Every price.
-            </h1>
-            <p style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '16px', color: 'rgba(255,255,255,0.75)', lineHeight: '1.7', marginBottom: '36px' }}>
-              The most comprehensive philatelic catalogue ever built. Powered by 170 years of Stanley Gibbons expertise.
-            </p>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <input
-                type="text"
-                value={query}
-                onChange={function(e) { setQuery(e.target.value) }}
-                onKeyDown={handleKeyDown}
-                placeholder="Search by SG number, country, colour..."
-                style={{ flex: 1, padding: '14px 20px', borderRadius: '6px', border: 'none', background: 'rgba(255,255,255,0.15)', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', outline: 'none' }}
-              />
-              <button onClick={handleSearch} style={{ padding: '14px 32px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#293451', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                Search catalogue
-              </button>
-            </div>
-            <div style={{ marginTop: '16px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
-              Try: "Penny Black", "SG 1", "1933 Centenary", "Falkland Islands"
-            </div>
+      {/* ── Search hero ─────────────────────────────────────────────── */}
+      <div style={{ background: '#293451', padding: '48px 80px 40px' }}>
+        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>
+            Stanley Gibbons Vision
           </div>
-        </div>
-      </div>
-
-      <div style={{ background: '#293451', padding: '28px 80px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr' }}>
-        {[
-          { value: '500,000+', label: 'Stamps catalogued' },
-          { value: '200+', label: 'Countries and territories' },
-          { value: '170 years', label: 'Of philatelic expertise' },
-          { value: 'Millions', label: 'In auction realisations' },
-        ].map(function(stat, i) {
-          return (
-            <div key={stat.label} style={{ textAlign: 'center', padding: '0 24px', borderLeft: i > 0 ? '0.5px solid rgba(255,255,255,0.15)' : 'none' }}>
-              <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '600', color: '#a3925f', marginBottom: '4px' }}>{stat.value}</div>
-              <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>{stat.label}</div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div style={{ background: '#fff', padding: '72px 80px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '52px' }}>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>Everything you need</div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#293451', marginBottom: '16px' }}>The complete philatelic resource</div>
-          <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '16px', color: '#888', maxWidth: '560px', margin: '0 auto', lineHeight: '1.7' }}>
-            Built for collectors, dealers and investors who need precision data and historic context.
+          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '600', color: '#fff', marginBottom: '24px', textAlign: 'center' }}>
+            Search the catalogue
           </div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
-          {features.map(function(f) {
-            return (
-              <div key={f.title} style={{ padding: '32px 28px', border: '0.5px solid #eee', borderRadius: '8px', background: '#fafaf8' }}>
-                <div style={{ width: '44px', height: '44px', background: '#e6f0f0', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#293451" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={f.icon} />
-                  </svg>
+
+          {/* Main search bar */}
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Search by SG number, country, series, colour, denomination..."
+              style={{ flex: 1, padding: '14px 20px', borderRadius: '6px', border: 'none', background: 'rgba(255,255,255,0.12)', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', outline: 'none' }}
+            />
+            <button
+              onClick={handleSearch}
+              style={{ padding: '14px 32px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            >
+              Search
+            </button>
+          </div>
+
+          {/* Active filter pills */}
+          {activeFilters.length > 0 && (
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+              {activeFilters.map((f, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(163,146,95,0.2)', border: '1px solid rgba(163,146,95,0.4)', borderRadius: '20px', padding: '4px 12px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#fff' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>{FILTER_FIELDS.find(ff => ff.value === f.field)?.label}:</span>
+                  <span>{f.value}</span>
+                  <button onClick={() => removeFilter(i)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '14px', padding: '0 0 0 4px', lineHeight: 1 }}>×</button>
                 </div>
-                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#293451', marginBottom: '8px' }}>{f.title}</div>
-                <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#666', lineHeight: '1.7' }}>{f.desc}</div>
+              ))}
+              <button onClick={() => setActiveFilters([])} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>Clear all</button>
+            </div>
+          )}
+
+          {/* Filter toggle */}
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            style={{ background: 'none', border: 'none', color: showFilters ? '#a3925f' : 'rgba(255,255,255,0.5)', fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', cursor: 'pointer', padding: 0, letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <span>{showFilters ? '▲' : '▼'}</span> {showFilters ? 'Hide filters' : 'Add filters'} {activeFilters.length > 0 && `(${activeFilters.length} active)`}
+          </button>
+
+          {/* Filter builder */}
+          {showFilters && (
+            <div style={{ marginTop: '16px', padding: '20px', background: 'rgba(255,255,255,0.07)', borderRadius: '8px', border: '0.5px solid rgba(255,255,255,0.12)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto auto', gap: '10px', alignItems: 'flex-end', marginBottom: '16px' }}>
+                <div>
+                  <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>Filter by</div>
+                  <select
+                    value={filterField}
+                    onChange={e => setFilterField(e.target.value)}
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '0.5px solid rgba(255,255,255,0.2)', background: '#344467', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
+                  >
+                    {FILTER_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>Value</div>
+                  <input
+                    type="text"
+                    value={filterValue}
+                    onChange={e => setFilterValue(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') addFilter() }}
+                    placeholder="e.g. 1d. red"
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '0.5px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: '#fff', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
+                  />
+                </div>
+                <button
+                  onClick={addFilter}
+                  style={{ padding: '9px 20px', borderRadius: '6px', border: 'none', background: '#a3925f', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'flex-end' }}
+                >
+                  + Add
+                </button>
+                <button
+                  onClick={handleSearch}
+                  style={{ padding: '9px 20px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.3)', background: 'transparent', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'flex-end' }}
+                >
+                  Search
+                </button>
               </div>
-            )
-          })}
+
+              {/* Quick filter chips */}
+              <div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>Quick filters</div>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {[
+                    { label: 'Mint only', field: 'condition', value: 'Mint' },
+                    { label: 'Under £100', field: 'price_max', value: '100' },
+                    { label: '£100–£500', field: 'price_min', value: '100' },
+                    { label: 'Pre-1900', field: 'year_issued', value: '1900' },
+                    { label: 'Error stamps', field: 'is_error', value: 'true' },
+                    { label: 'Watermarked', field: 'watermark', value: 'Crown' },
+                    { label: 'Perforated 14', field: 'perforation_gauge', value: '14' },
+                  ].map(chip => (
+                    <button
+                      key={chip.label}
+                      onClick={() => setActiveFilters(prev => [...prev, { field: chip.field, value: chip.value }])}
+                      style={{ padding: '5px 12px', borderRadius: '20px', border: '0.5px solid rgba(255,255,255,0.2)', background: 'transparent', color: 'rgba(255,255,255,0.7)', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                    >
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '460px' }}>
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
-          <img src={IMG('GB0040.jpg')} alt="Twopenny Blue block" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        </div>
-        <div style={{ background: '#293451', padding: '64px 72px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>Unmatched precision</div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', lineHeight: '1.2', marginBottom: '20px' }}>
-            Every variation.<br />Every sub-number.
+      {/* ── Browse by country / theme ───────────────────────────────── */}
+      <div style={{ background: '#fff', padding: '48px 80px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+
+          {/* By country */}
+          <div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Browse by country</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '20px' }}>Jump straight to a country's full catalogue</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              {COUNTRIES.map(c => (
+                <button
+                  key={c.iso}
+                  onClick={() => browseCountry(c.iso)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '6px', border: '0.5px solid #eee', background: '#fafaf8', cursor: 'pointer', textAlign: 'left', transition: 'border 0.15s' }}
+                >
+                  <span style={{ fontSize: '18px', lineHeight: 1, flexShrink: 0 }}>{c.flag}</span>
+                  <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
-          <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.8', marginBottom: '32px' }}>
-            From shades and perforations to watermark varieties and overprints, every catalogued variation has its own record, its own price history, and its own auction data.
+
+          {/* By theme */}
+          <div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Browse by theme</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '20px' }}>Find stamps by subject matter</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              {THEMES.map(t => (
+                <button
+                  key={t.label}
+                  onClick={() => browseTheme(t.label)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '6px', border: '0.5px solid #eee', background: '#fafaf8', cursor: 'pointer', textAlign: 'left', transition: 'border 0.15s' }}
+                >
+                  <span style={{ fontSize: '16px', lineHeight: 1, flexShrink: 0 }}>{t.icon}</span>
+                  <span style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333' }}>{t.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
-          <a href="/catalogue" style={{ display: 'inline-block', padding: '13px 28px', background: '#a3925f', color: '#293451', borderRadius: '6px', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', textDecoration: 'none', alignSelf: 'flex-start' }}>
-            Browse the catalogue
-          </a>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '460px' }}>
-        <div style={{ background: '#f5f5f3', padding: '64px 72px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>Historic price data</div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#293451', lineHeight: '1.2', marginBottom: '20px' }}>
-            Know what a stamp<br />is really worth.
+      {/* ── Recommended ─────────────────────────────────────────────── */}
+      <div style={{ background: '#f5f5f3', padding: '48px 80px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
+          <div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '4px' }}>Recommended for you</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888' }}>Based on your wishlist, collection and browsing history</div>
           </div>
-          <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: '#666', lineHeight: '1.8', marginBottom: '32px' }}>
-            Catalogue values stretching back decades, combined with real auction hammer prices, give you the most complete picture of any stamp's true market value.
-          </div>
-          <a href="/catalogue" style={{ display: 'inline-block', padding: '13px 28px', background: '#293451', color: '#fff', borderRadius: '6px', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '13px', textDecoration: 'none', alignSelf: 'flex-start' }}>
-            See price history
-          </a>
+          <a href="/catalogue" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>Browse all →</a>
         </div>
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
-          <img src={IMG('GB0043_1.jpg')} alt="10 pound stamp with tweezers" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
+          {RECOMMENDED.map(item => (
+            <a key={item.sgNum} href={'/catalogue?q=' + encodeURIComponent(item.sgNum)} style={{ background: '#fff', border: '0.5px solid #ddd', borderRadius: '8px', padding: '20px', textDecoration: 'none', display: 'block' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#293451' }}>{item.sgNum}</div>
+                <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', padding: '2px 8px', borderRadius: '20px', background: '#eaecf2', color: '#293451', whiteSpace: 'nowrap' }}>{item.reason}</span>
+              </div>
+              <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#333', marginBottom: '4px', lineHeight: '1.4' }}>{item.desc}</div>
+              <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', marginBottom: '12px' }}>{item.country} · {item.condition}</div>
+              <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#1a5c1a' }}>{item.catValue}</div>
+            </a>
+          ))}
         </div>
       </div>
 
-      <div style={{ background: '#fff', padding: '72px 80px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '32px', fontWeight: '600', color: '#293451' }}>
-            Recent realisations
-          </div>
-          <a href="https://sgbaldwins.com/auctions/upcoming-auctions" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#293451', textDecoration: 'none', padding: '10px 20px', border: '1px solid #293451', borderRadius: '6px' }}>
-            Upcoming auctions
+      {/* ── Feature shortcuts ────────────────────────────────────────── */}
+      <div style={{ background: '#fff', padding: '48px 80px' }}>
+        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '24px' }}>Your account</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+
+          {/* My Collection */}
+          <a href="/account" style={{ background: '#293451', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>My Collection</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', marginBottom: '4px' }}>{collectionCount}</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>items in your collection</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>View collection →</div>
           </a>
+
+          {/* Wishlist */}
+          <a href="/account" style={{ background: '#7a1a2e', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Wishlist</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '36px', fontWeight: '600', color: '#fff', marginBottom: '4px' }}>{wishlistCount}</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '16px' }}>stamps on your wishlist</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>View wishlist →</div>
+          </a>
+
+          {/* Budget */}
+          <a href="/account" style={{ background: '#fff', border: '0.5px solid #ddd', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Budget tracker</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '28px', fontWeight: '600', color: '#293451', marginBottom: '4px' }}>£{budgetRemaining.toFixed(2)}</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '12px' }}>remaining this period</div>
+            <div style={{ height: '4px', background: '#eee', borderRadius: '2px', overflow: 'hidden', marginBottom: '12px' }}>
+              <div style={{ height: '100%', width: budgetPct + '%', background: budgetPct > 75 ? '#c0392b' : budgetPct > 50 ? '#a3925f' : '#293451', borderRadius: '2px' }} />
+            </div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#888', letterSpacing: '0.04em' }}>View budget →</div>
+          </a>
+
         </div>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #293451' }}>
-              {['Country', 'SG no.', 'Description', 'Hammer price', 'Sale', 'Date', ''].map(function(h) {
+
+        {/* Second row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+
+          {/* SGB 100 */}
+          <a href="/sgb100" style={{ background: '#0a0e1a', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#a3925f', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>SGB 100</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#fff', marginBottom: '6px' }}>Performance index</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '16px' }}>The 100 best-performing stamps by catalogue value appreciation since 2005</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em' }}>View index →</div>
+          </a>
+
+          {/* Looking to sell */}
+          <a href="/account" style={{ background: '#f5f5f3', border: '0.5px solid #ddd', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Looking to sell</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Flagged items</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '16px' }}>Stamps you've marked as available to sell — track value and request a valuation</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.04em' }}>View flagged →</div>
+          </a>
+
+          {/* Community */}
+          <a href="/community" style={{ background: '#f5f5f3', border: '0.5px solid #ddd', borderRadius: '8px', padding: '24px', textDecoration: 'none', display: 'block' }}>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Community</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '20px', fontWeight: '600', color: '#293451', marginBottom: '6px' }}>Discussions</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888', marginBottom: '16px' }}>Share finds, ask questions and connect with collectors</div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', letterSpacing: '0.04em' }}>Go to community →</div>
+          </a>
+
+        </div>
+      </div>
+
+
+      {/* ── Recent realisations ─────────────────────────────────────── */}
+      <div style={{ background: '#f5f5f3', padding: '48px 80px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
+          <div>
+            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '16px', fontWeight: '600', color: '#293451', marginBottom: '4px' }}>Recent realisations</div>
+            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#888' }}>Latest hammer prices from Stanley Gibbons auctions</div>
+          </div>
+          <a href="https://sgbaldwins.com/auctions/upcoming-auctions" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', padding: '8px 16px', border: '0.5px solid #293451', borderRadius: '5px', letterSpacing: '0.04em' }}>Upcoming auctions →</a>
+        </div>
+        <div style={{ background: '#fff', border: '0.5px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1.5px solid #293451', background: '#fafaf8' }}>
+                {['Country', 'SG no.', 'Description', 'Condition', 'Hammer price', 'Sale', 'Date', ''].map(h => (
+                  <th key={h} style={{ padding: '10px 14px', fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', color: '#293451', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'left', whiteSpace: 'nowrap' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {realisations.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '32px', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa', textAlign: 'center' }}>Loading recent realisations...</td>
+                </tr>
+              ) : realisations.map(sale => {
+                const variation = sale.stamp_variations
+                const stamp = variation?.stamps
+                const sgNum = variation?.sg_sub_number || '—'
+                const desc = variation?.colour_shade || stamp?.colour_primary || '—'
                 return (
-                  <th key={h} style={{ textAlign: 'left', padding: '10px 0', fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#293451', textTransform: 'uppercase', letterSpacing: '0.06em', paddingRight: '16px' }}>
-                    {h}
-                  </th>
+                  <tr key={sale.id} style={{ borderBottom: '0.5px solid #f0f0f0' }}>
+                    <td style={{ padding: '11px 14px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888' }}>{countryName(sale.country_iso)}</td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#293451' }}>{sgNum}</td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#444', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{desc}</td>
+                    <td style={{ padding: '11px 14px' }}>
+                      <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '20px', background: sale.sale_condition?.toLowerCase().includes('mint') ? '#e8f4e8' : '#fdf0e0', color: sale.sale_condition?.toLowerCase().includes('mint') ? '#1a5c1a' : '#7a3d00', whiteSpace: 'nowrap' }}>
+                        {sale.sale_condition || '—'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: '#293451', whiteSpace: 'nowrap' }}>
+                      {'£' + parseFloat(sale.sale_price).toLocaleString('en-GB')}
+                    </td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888' }}>{sale.sale_number}</td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', whiteSpace: 'nowrap' }}>{formatDate(sale.sale_date)}</td>
+                    <td style={{ padding: '11px 14px', textAlign: 'right' }}>
+                      <a href={lotUrl(sale)} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', color: '#293451', textDecoration: 'none', padding: '5px 12px', border: '0.5px solid #293451', borderRadius: '4px', whiteSpace: 'nowrap' }}>View lot</a>
+                    </td>
+                  </tr>
                 )
               })}
-            </tr>
-          </thead>
-          <tbody>
-            {realisations.length === 0 ? (
-              <tr>
-                <td colSpan={7} style={{ padding: '32px 0', fontFamily: 'Open Sans, sans-serif', fontSize: '14px', color: '#aaa', textAlign: 'center' }}>
-                  Loading recent realisations...
-                </td>
-              </tr>
-            ) : realisations.map(function(sale) {
-              const variation = sale.stamp_variations
-              const stamp = variation ? variation.stamps : null
-              const sgNum = variation ? variation.sg_sub_number : '—'
-              const desc = variation ? (variation.colour_shade || (stamp ? stamp.colour_primary : '')) : '—'
-              const price = '£' + parseFloat(sale.sale_price).toLocaleString('en-GB')
-              const country = countryName(sale.country_iso)
-              const saleDate = formatDate(sale.sale_date)
-              return (
-                <tr key={sale.id} style={{ borderBottom: '0.5px solid #eee' }}>
-                  <td style={{ padding: '13px 16px 13px 0', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#666' }}>{country}</td>
-                  <td style={{ padding: '13px 16px 13px 0', fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#293451' }}>{sgNum}</td>
-                  <td style={{ padding: '13px 16px 13px 0', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#444' }}>{desc}</td>
-                  <td style={{ padding: '13px 16px 13px 0', fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#293451', whiteSpace: 'nowrap' }}>{price}</td>
-                  <td style={{ padding: '13px 16px 13px 0', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888' }}>{sale.sale_number}</td>
-                  <td style={{ padding: '13px 16px 13px 0', fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#888', whiteSpace: 'nowrap' }}>{saleDate}</td>
-                  <td style={{ padding: '13px 0', textAlign: 'right' }}>
-                    <a href={lotUrl(sale)} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', padding: '6px 14px', border: '0.5px solid #293451', borderRadius: '4px', whiteSpace: 'nowrap' }}>
-                      View lot
-                    </a>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{ position: 'relative', overflow: 'hidden', minHeight: '320px', display: 'flex', alignItems: 'center' }}>
-        <img src={IMG('GB0050.jpg')} alt="Queen Elizabeth engraving" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(41,52,81,0.85)' }} />
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', padding: '0 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>Stanley Gibbons Auctions</div>
-            <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '40px', fontWeight: '600', color: '#fff', lineHeight: '1.2', marginBottom: '12px' }}>Upcoming auctions</div>
-            <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: 'rgba(255,255,255,0.7)', maxWidth: '500px', lineHeight: '1.7' }}>
-              Browse forthcoming Stanley Gibbons auction sales and register to bid on rare philatelic material.
-            </div>
-          </div>
-          <a href="https://sgbaldwins.com/auctions/upcoming-auctions" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '16px 40px', background: '#a3925f', color: '#293451', borderRadius: '6px', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0, marginLeft: '48px' }}>
-            View upcoming auctions
-          </a>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <div style={{ background: '#293451', padding: '40px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '16px', color: '#fff', marginBottom: '4px' }}>
-            Stanley Gibbons <span style={{ color: '#a3925f', fontWeight: '400' }}>Catalogue</span>
-          </div>
-          <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>The world authority on stamps since 1856</div>
-        </div>
-        <div style={{ display: 'flex', gap: '32px' }}>
-          {[
-            { label: 'Catalogue', href: '/catalogue' },
-            { label: 'Account', href: '/account' },
-            { label: 'Upcoming auctions', href: 'https://sgbaldwins.com/auctions/upcoming-auctions' },
-          ].map(function(link) {
-            return (
-              <a key={link.label} href={link.href} style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>
-                {link.label}
-              </a>
-            )
-          })}
-        </div>
-        <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: 'rgba(255,255,255,0.3)' }}>2026 Stanley Gibbons</div>
+      {/* ── Recent auctions strip ────────────────────────────────────── */}
+      <div style={{ background: '#293451', padding: '32px 80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: '600', color: '#fff' }}>Upcoming Stanley Gibbons auctions</div>
+        <a href="https://sgbaldwins.com/auctions/upcoming-auctions" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#a3925f', textDecoration: 'none', padding: '9px 20px', border: '1px solid #a3925f', borderRadius: '5px', letterSpacing: '0.04em' }}>
+          View upcoming auctions →
+        </a>
       </div>
 
     </div>
