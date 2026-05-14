@@ -46,7 +46,7 @@ export default function LandingPage() {
               <a href="/account" style={{ display: 'inline-block', padding: '15px 36px', borderRadius: '6px', border: '1.5px solid #a3925f', background: 'transparent', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
                 Get started
               </a>
-              <a href="/account" style={{ display: 'inline-block', padding: '14px 0', border: 'none', background: 'transparent', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', letterSpacing: '0.03em', whiteSpace: 'nowrap', borderBottom: '1.5px solid #a3925f' }}>
+              <a href="#pricing" style={{ display: 'inline-block', padding: '14px 0', border: 'none', background: 'transparent', color: '#fff', fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: '14px', textDecoration: 'none', letterSpacing: '0.03em', whiteSpace: 'nowrap', borderBottom: '1.5px solid #a3925f' }}>
                 View pricing
               </a>
             </div>
@@ -143,7 +143,7 @@ export default function LandingPage() {
       </div>
 
       {/* Pricing */}
-      <div style={{ background: '#fff', padding: '80px 80px' }}>
+      <div id="pricing" style={{ background: '#fff', padding: '80px 80px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '32px', fontWeight: '600', color: '#222', marginBottom: '10px' }}>Pricing</div>
           <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '15px', color: '#888' }}>Choose the plan that's right for your collecting needs.</div>
