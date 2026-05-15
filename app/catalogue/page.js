@@ -338,12 +338,12 @@ function CatalogueInner() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px' }}>
               {[
-                { sgNum: 'SG 1', desc: '1840 1d. black', country: 'Great Britain', condition: 'Fine used', catValue: '£2,500', reason: 'On your wishlist' },
-                { sgNum: 'SG 128', desc: '1933 1d. black & scarlet', country: 'Falkland Islands', condition: 'Unmounted mint', catValue: '£850', reason: 'Similar to collection' },
-                { sgNum: 'SG 450', desc: '1948 Silver Wedding 10s.', country: 'Great Britain', condition: 'Mint', catValue: '£320', reason: 'Popular this week' },
-                { sgNum: 'SG 2', desc: '1840 2d. blue', country: 'Great Britain', condition: 'Used', catValue: '£1,200', reason: 'Completes your set' },
+                { sgNum: 'SG 1', desc: '1840 1d. black', country: 'Great Britain', condition: 'Fine used', catValue: '£2,500', reason: 'On your wishlist', q: '1', iso: 'GB' },
+                { sgNum: 'SG 128', desc: '1933 1d. black & scarlet', country: 'Falkland Islands', condition: 'Unmounted mint', catValue: '£850', reason: 'Similar to collection', q: '128', iso: 'FK' },
+                { sgNum: 'SG 450', desc: '1948 Silver Wedding 10s.', country: 'Great Britain', condition: 'Mint', catValue: '£320', reason: 'Popular this week', q: '450', iso: 'GB' },
+                { sgNum: 'SG 2', desc: '1840 2d. blue', country: 'Great Britain', condition: 'Used', catValue: '£1,200', reason: 'Completes your set', q: '2', iso: 'GB' },
               ].map(item => (
-                <a key={item.sgNum} href={'/catalogue?q=' + encodeURIComponent(item.sgNum)} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', padding: '16px', textDecoration: 'none', display: 'block' }}>
+                <a key={item.sgNum} href={'/catalogue?q=' + encodeURIComponent(item.q) + '&country=' + item.iso} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', padding: '16px', textDecoration: 'none', display: 'block' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                     <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '700', color: '#293451' }}>{item.sgNum}</div>
                     <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', padding: '2px 8px', borderRadius: '20px', background: '#f0f2f6', color: '#666', whiteSpace: 'nowrap' }}>{item.reason}</span>
@@ -365,40 +365,12 @@ function CatalogueInner() {
               </div>
               <a href="https://www.stanleygibbons.com/shop" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>Visit the shop →</a>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px' }}>
-              {newIn.length === 0 ? (
-                <div style={{ gridColumn: '1/-1', padding: '32px', textAlign: 'center', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#aaa' }}>Loading new stock...</div>
-              ) : newIn.map(sv => {
-                const stamp = sv.stamps
-                const sgNum = sv.sg_sub_number || stamp?.sg_number || '—'
-                const desc = sv.colour_shade || stamp?.colour_primary || '—'
-                const denom = stamp?.denomination || ''
-                const CMAP = { FK: 'Falkland Islands', GB: 'Great Britain', AU: 'Australia', CA: 'Canada', NZ: 'New Zealand', BM: 'Bermuda' }
-                const country = CMAP[stamp?.country_iso] || stamp?.country_iso || '—'
-                const imgUrl = SUPABASE_URL + '/storage/v1/object/public/auction-images/' + sv.id + '-1.jpg'
-                return (
-                  <a key={sv.id} href={'/catalogue?q=' + encodeURIComponent('SG ' + sgNum)} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden', textDecoration: 'none', display: 'block' }}>
-                    <div style={{ height: '120px', background: '#f0f0ee', position: 'relative' }}>
-                      <NewInImage url={imgUrl} />
-                      <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: 'Montserrat, sans-serif', fontSize: '9px', fontWeight: '600', padding: '2px 7px', borderRadius: '3px', background: '#293451', color: '#a3925f', letterSpacing: '0.04em' }}>NEW</span>
-                    </div>
-                    <div style={{ padding: '12px 14px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3px' }}>
-                        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '700', color: '#293451' }}>SG {sgNum}</div>
-                        <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#1a5c1a' }}>
-                          {sv.sg_cat_value_mint ? '£' + parseFloat(sv.sg_cat_value_mint).toLocaleString('en-GB') : '—'}
-                        </div>
-                      </div>
-                      <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#444', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: '2px' }}>{denom} {desc}</div>
-                      <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '11px', color: '#aaa' }}>{country}</div>
-                    </div>
-                  </a>
-                )
-              })}
+            <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#aaa', background: '#fafaf8', borderRadius: '6px', border: '0.5px solid #eee' }}>
+              Coming soon — new stock listings will appear here.
             </div>
           </div>
 
-          {/* Globe */}
+                    {/* Globe */}
           <div style={{ borderRadius: '10px', overflow: 'hidden', background: 'radial-gradient(ellipse at 60% 40%, #1a2744 0%, #0c1628 50%, #050a14 100%)', height: '380px', display: 'flex', flexDirection: 'column' }}>
             <div style={{ textAlign: 'center', padding: '20px 24px 0', flexShrink: 0 }}>
               <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#a3925f', marginBottom: '6px' }}>Explore the catalogue</div>
