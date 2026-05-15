@@ -260,7 +260,7 @@ export default function Home() {
           <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#a3925f', letterSpacing: '0.04em', marginTop: '24px' }}>View collection →</div>
         </div>
         <div style={{ position: 'relative', overflow: 'hidden', height: '380px' }}>
-          <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/21.webp" alt="Stamp collection" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          <img src="https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/21.jpg" alt="Stamp collection" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         </div>
       </a>
 
