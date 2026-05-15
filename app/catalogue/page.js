@@ -365,8 +365,32 @@ function CatalogueInner() {
               </div>
               <a href="https://www.stanleygibbons.com/shop" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>Visit the shop →</a>
             </div>
-            <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: '#aaa', background: '#fafaf8', borderRadius: '6px', border: '0.5px solid #eee' }}>
-              Coming soon — new stock listings will appear here.
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '12px' }}>
+              {[
+                { sgNum: 'SG 136', desc: '1933 Centenary 5s black and yellow', subDesc: 'King Penguin', condition: 'Used', price: '£1,500', iso: 'FK' },
+                { sgNum: 'SG 135', desc: '1933 Centenary 2s6d', subDesc: 'Battle Memorial', condition: 'Mint', price: '£250', iso: 'FK' },
+                { sgNum: 'SG 136a', desc: '1933 Centenary 5s black and yellow-orange', subDesc: '', condition: 'Mint', price: '£1,950', iso: 'FK' },
+                { sgNum: 'SG 127-138', desc: '1933 Centenary set of 12 to £1', subDesc: '', condition: 'Mint', price: '£4,250', iso: 'FK' },
+                { sgNum: 'SG 161a', desc: '1938-50 5s indigo and pale yellow-brown', subDesc: '', condition: 'Unmounted mint', price: '£1,100', iso: 'FK' },
+              ].map(item => (
+                <a key={item.sgNum} href={'/catalogue?q=' + encodeURIComponent(item.sgNum.replace('SG ', '')) + '&country=' + item.iso} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden', textDecoration: 'none', display: 'block' }}>
+                  <div style={{ height: '120px', background: '#e8edf0', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                    <span style={{ fontSize: '40px' }}>📮</span>
+                    <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: 'Montserrat, sans-serif', fontSize: '9px', fontWeight: '600', padding: '2px 7px', borderRadius: '3px', background: '#293451', color: '#a3925f', letterSpacing: '0.04em' }}>NEW</span>
+                  </div>
+                  <div style={{ padding: '12px 14px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                      <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '700', color: '#293451' }}>{item.sgNum}</div>
+                      <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '13px', fontWeight: '600', color: '#1a5c1a' }}>{item.price}</div>
+                    </div>
+                    <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '11px', color: '#444', lineHeight: '1.4', marginBottom: '4px' }}>{item.desc}{item.subDesc && <span style={{ color: '#888' }}> · {item.subDesc}</span>}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                      <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '11px', color: '#888' }}>Falkland Islands</div>
+                      <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '10px', fontWeight: '600', padding: '2px 7px', borderRadius: '20px', background: item.condition === 'Mint' || item.condition === 'Unmounted mint' ? '#e8f4e8' : '#fdf0e0', color: item.condition === 'Mint' || item.condition === 'Unmounted mint' ? '#1a5c1a' : '#7a3d00' }}>{item.condition}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
 
