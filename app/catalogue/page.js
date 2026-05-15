@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import { searchCatalogue } from '../../lib/catalogue'
 import SetCard from '../../components/SetCard'
 import { CatalogueStatusProvider } from '../../components/StampRow'
-import GlobeComponent from '../../components/GlobeComponent'
 import { supabase } from '../../lib/supabase'
 
 const FILTER_FIELDS = [
@@ -135,12 +134,6 @@ function CatalogueInner() {
       runSearch(q, '', {})
     }
   }, [searchParams, runSearch])
-
-  function handleGlobeSelect(iso) {
-    setCountry(iso)
-    setQuery('')
-    runSearch('', iso, {})
-  }
 
   function addRow() {
     setFilterRows(prev => [...prev, newRow()])
@@ -363,7 +356,7 @@ function CatalogueInner() {
                 <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '15px', fontWeight: '600', color: '#293451', marginBottom: '3px' }}>New in stock</div>
                 <div style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '12px', color: '#aaa' }}>Stamps that have just arrived in the Stanley Gibbons shop — click to view and buy</div>
               </div>
-              <a href="https://www.stanleygibbons.com/shop" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>Visit the shop →</a>
+              <a href="https://shop.stanleygibbons.com/collections/stamps-commonwealth" target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '12px', fontWeight: '600', color: '#293451', textDecoration: 'none', letterSpacing: '0.04em' }}>Visit the shop →</a>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '12px' }}>
               {[
@@ -394,17 +387,7 @@ function CatalogueInner() {
             </div>
           </div>
 
-                    {/* Globe */}
-          <div style={{ borderRadius: '10px', overflow: 'hidden', background: 'radial-gradient(ellipse at 60% 40%, #1a2744 0%, #0c1628 50%, #050a14 100%)', height: '380px', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ textAlign: 'center', padding: '20px 24px 0', flexShrink: 0 }}>
-              <div style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '11px', fontWeight: '600', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#a3925f', marginBottom: '6px' }}>Explore the catalogue</div>
-              <p style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '13px', color: 'rgba(255,255,255,0.5)', margin: '0 auto', maxWidth: '500px', lineHeight: '1.8' }}>Drag the globe and click a pin to browse stamps by territory.</p>
-            </div>
-            <div style={{ flex: 1, minHeight: 0 }}>
-              <GlobeComponent onCountrySelect={handleGlobeSelect} />
-            </div>
-          </div>
-        </>
+                  </>
       )}
 
       {loading && (
