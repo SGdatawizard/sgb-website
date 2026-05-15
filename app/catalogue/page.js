@@ -366,7 +366,7 @@ function CatalogueInner() {
                 { sgNum: 'SG 127-138', desc: '1933 Centenary set of 12 to £1', subDesc: '', condition: 'Mint', price: '£4,250', iso: 'FK', img: 'https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/P267000276.webp' },
                 { sgNum: 'SG 161a', desc: '1938-50 5s indigo and pale yellow-brown', subDesc: '', condition: 'Unmounted mint', price: '£1,100', iso: 'FK', img: 'https://ambzwvkbxpkjuwmjnvgj.supabase.co/storage/v1/object/public/homepage-images/P267000278_1.webp' },
               ].map(item => (
-                <a key={item.sgNum} href={'/catalogue?q=' + encodeURIComponent(item.sgNum.replace('SG ', '')) + '&country=' + item.iso} style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden', textDecoration: 'none', display: 'block' }}>
+                <a key={item.sgNum} href='https://shop.stanleygibbons.com/collections/stamps-commonwealth' target='_blank' rel='noopener noreferrer' style={{ background: '#fafaf8', border: '0.5px solid #eee', borderRadius: '6px', overflow: 'hidden', textDecoration: 'none', display: 'block' }}>
                   <div style={{ height: '140px', background: '#f0f0ee', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                     <img src={item.img} alt={item.sgNum} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }} />
                     <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: 'Montserrat, sans-serif', fontSize: '9px', fontWeight: '600', padding: '2px 7px', borderRadius: '3px', background: '#293451', color: '#a3925f', letterSpacing: '0.04em' }}>NEW</span>
